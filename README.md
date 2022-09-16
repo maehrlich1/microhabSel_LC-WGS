@@ -10,8 +10,39 @@ Libraries were prepared from DNA isolated from 963 *Fundulus heteroclitus* indiv
 
 ## Brief Summary of Analysis Pipeline
 
-Please see `/markdowns` for more detail.
+See `/markdowns` for more detail.
 
 ### Raw read processing
 
+* QC
+* Trimming
+* QC post-trimming
+
 Raw reads were quality controlled using `FastQC` and sample statistics were aggregated using `MultiQC`.
+
+
+
+
+
+
+### Read Alignment
+
+* Testing
+* Aligning - BWA or Bowtie
+
+### BAM Filtering
+
+* Non-unique mapping
+* Mapping Quality
+* Dedup
+
+### Seq Run Aggregation
+
+* Merging
+* Dedup again
+
+### BAM Cleaning
+
+* Clip overlap
+* Indel realignment
+* Remove high depth
