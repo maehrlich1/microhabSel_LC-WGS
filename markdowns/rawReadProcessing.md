@@ -4,7 +4,7 @@ This markdown details:
 
 * Quality Control
 * Read Trimming
-* Deduplication
+* (Deduplication)?
 * Aggregation across sequencing runs
 
 ## Quality Control
@@ -15,5 +15,4 @@ Quality control was performed using `FastQC` and samples were jointly analyzed u
 fastqc -t 39 -o /projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/fastqc/fastqc_2ndStage *fastq.gz
 
 multiqc -m fastqc .
-
 ```
