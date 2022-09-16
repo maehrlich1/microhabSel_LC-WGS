@@ -1,0 +1,32 @@
+#!/bin/bash
+
+#Job Name
+#BSUB -J fastqc_2ndStage_140922
+
+#Project
+#BSUB -P fun_gen_1
+
+#Queue
+#BSUB -q normal
+
+#Cores
+#BSUB -n 39
+
+#RAM per core (Use M and G for Mb and Gb)
+#BSUB -R "rusage[mem=10G]"
+
+#Walltime
+#BSUB -W 05:00
+
+#Output File (Absolute path! Can use job name variable)
+#BSUB -o /home/mae120/logs/microhabSel_LC-WGS/fastqc_2ndStage_140922.out
+
+###################################################################
+#SETUP
+#change directory
+
+cd /projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/raw_reads/2ndStage
+
+#CODE
+
+fastqc -t 39 -o /projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/fastqc/fastqc_2ndStage *fastq.gz
