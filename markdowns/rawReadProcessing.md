@@ -4,8 +4,7 @@ This markdown details:
 
 * Quality Control
 * Read Trimming
-* (Deduplication)?
-* Aggregation across sequencing runs
+* Post-trim QC
 
 ## Quality Control
 
@@ -16,3 +15,7 @@ fastqc -t 39 -o /projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/fastqc/fastqc_
 
 multiqc -m fastqc .
 ```
+
+## Read Trimming
+
+Trimming was performed using `
