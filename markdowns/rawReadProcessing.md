@@ -20,10 +20,22 @@ multiqc -m fastqc .
 
 Trimming was performed using `Trimmomatic v.0.39` with the following settings:
 
-ILLUMINACLIP 2:30:10:1:true
+ILLUMINACLIP:2:30:10:1:true
 
 * Seed Mismatches = 2
-* Palindrom clip threshold = 30
+* Palindrome clip threshold = 30
 * Simple clip threshold = 10
 * Min Adapter length = 1
 * Keep reverse read upon read-through detection = TRUE
+
+SLIDINGWINDOW:4:15
+
+* Four-base window below 15
+
+LEADING:3
+
+* Less than 3
+
+TRAILING:3
+
+* Less than 3
