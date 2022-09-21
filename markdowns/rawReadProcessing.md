@@ -18,4 +18,12 @@ multiqc -m fastqc .
 
 ## Read Trimming
 
-Trimming was performed using `
+Trimming was performed using `Trimmomatic v.0.39` with the following settings:
+
+ILLUMINACLIP 2:30:10:1:true
+
+* Seed Mismatches = 2
+* Palindrom clip threshold = 30
+* Simple clip threshold = 10
+* Min Adapter length = 1
+* Keep reverse read upon read-through detection = TRUE
