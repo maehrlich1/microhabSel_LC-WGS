@@ -14,21 +14,20 @@ See `/markdowns` for more detail.
 
 ### Raw read processing
 
-* QC
-* Trimming
+* QC of raw reads
+* Adapter and base-quality trimming
 * QC post-trimming
 
 Raw reads were quality controlled using `FastQC` and sample statistics were aggregated using `MultiQC`.
+Adapters were trimmed from raw reads and low quality bases clipped using `Trimmomatic-v0.39`.
+A second round of QC was performed to check proper trimming behavior.
+
+### Alignment
+
+* Aligner Testing
+* Alignment - BWA or Bowtie
 
 
-
-
-
-
-### Read Alignment
-
-* Testing
-* Aligning - BWA or Bowtie
 
 ### BAM Filtering
 
