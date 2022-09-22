@@ -64,7 +64,7 @@ Only 4 threads were used for `Trimmomatic` since output compression is the bottl
 
 However, in order to take advantage of the HPC cluster, the script was parallelized using GNU `parallel` and the automatic behavior of 1 job per thread suppressed using `-j 25%` since `Trimmomatic` is already using 4 threads.
 
-##Quality Control - Round 2
+## Quality Control - Round 2
 
 A second round of QC is performed to check whether adapter trimming was performed as expected.
 
