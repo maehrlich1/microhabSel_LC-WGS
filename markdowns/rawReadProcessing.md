@@ -18,9 +18,9 @@ multiqc -m fastqc .
 
 ## Read Trimming
 
-Trimming was performed using `Trimmomatic v.0.39` with the following settings:
+Read trimming was performed using `Trimmomatic v.0.39` with the following settings:
 
-ILLUMINACLIP:2:30:10:1:true
+`ILLUMINACLIP:2:30:10:1:true`
 
 * Seed Mismatches = 2
 * Palindrome clip threshold = 30
@@ -28,14 +28,39 @@ ILLUMINACLIP:2:30:10:1:true
 * Min Adapter length = 1
 * Keep reverse read upon read-through detection = TRUE
 
-SLIDINGWINDOW:4:15
+The `NexteraPE-PE.fa` supplied with `Trimmomatic v.0.39` was used for adapter clipping.
 
-* Four-base window below 15
+`SLIDINGWINDOW:4:15`
 
-LEADING:3
+* Clip reads once the average base quality in a 4-base window drops below 15
 
-* Less than 3
+`LEADING:3`
 
-TRAILING:3
+* Clip leading bases with quality <3
 
-* Less than 3
+`TRAILING:3`
+
+* Clip trailing bases with quality <3
+
+```
+#SETUP
+#change directory
+cd /projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/raw_reads/1stStage/
+
+#SET VARIABLES
+SAMPLETABLE=/projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/sample_table.tsv
+TRIMMOMATIC=~/software/local/Trimmomatic-0.39/trimmomatic-0.39.jar
+THREADS=4  #Optimal number of threads for Trimmomatic since output compression is limiting and more threads lead to no performance increase.
+ADAPTERS=~/software/local/Trimmomatic-0.39/adapters/NexteraPE-PE.fa
+R1_SUFFIX=_R1_001.fastq.gz
+OUTDIR=/projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/trimmed/1stStage/
+OUT_SUFFIX=_trimmed.fastq.gz
+
+#CODE
+#Parallelize Trimmomatic. Since Trimmo is optimized at 4 threads, we can take advantage of the up to 40 cores on the cluster. However, since Trimmo uses 4 threads already we reduce the jobload per core to 25% (=1/4 threads).
+parallel -j 25% --header : --colsep '\t' java -jar $TRIMMOMATIC PE -threads $THREADS -basein {fastq_prefix}$R1_SUFFIX -baseout $OUTDIR{sample}$OUT_SUFFIX ILLUMINACLIP:$ADAPTERS:2:30:10:1:true SLIDINGWINDOW:4:15 LEADING:3 TRAILING:3 :::: $SAMPLETABLE
+
+```
+Only 4 threads were used for `Trimmomatic` since output compression is the bottleneck. Further threads would not improve performance.
+
+However, in order to take advantage of the HPC cluster, the script was parallelized using GNU `parallel` and the automatic behavior of 1 job per thread suppressed using `-j 25%` since `Trimmomatic` is already using 4 threads.
