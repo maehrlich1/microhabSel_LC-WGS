@@ -20,15 +20,14 @@ multiqc -m fastqc .
 
 Read trimming was performed using `Trimmomatic v.0.39` with the following settings:
 
-`ILLUMINACLIP:2:30:10:1:true`
+`ILLUMINACLIP:NexteraPE-PE.fa:2:30:10:1:true`
 
+* `NexteraPE-PE.fa` supplied with `Trimmomatic v.0.39` was used for adapter clipping.
 * Seed Mismatches = 2
 * Palindrome clip threshold = 30
 * Simple clip threshold = 10
 * Min Adapter length = 1
 * Keep reverse read upon read-through detection = TRUE
-
-The `NexteraPE-PE.fa` supplied with `Trimmomatic v.0.39` was used for adapter clipping.
 
 `SLIDINGWINDOW:4:15`
 
@@ -41,6 +40,7 @@ The `NexteraPE-PE.fa` supplied with `Trimmomatic v.0.39` was used for adapter cl
 `TRAILING:3`
 
 * Clip trailing bases with quality <3
+
 
 ```
 #SETUP
