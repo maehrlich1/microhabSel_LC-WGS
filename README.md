@@ -25,9 +25,9 @@ A second round of QC was performed to check proper trimming behavior.
 ### Alignment
 
 * Aligner Testing
-* Alignment - BWA or Bowtie
+* Alignment
 
-
+Different alignment software was benchmarked using `Teaser`.
 
 ### BAM Filtering
 
