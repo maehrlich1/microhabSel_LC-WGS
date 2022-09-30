@@ -68,10 +68,20 @@ However, in order to take advantage of the HPC cluster, the script was paralleli
 
 A second round of QC is performed to check whether adapter trimming was performed as expected.
 
-The code used is essentially the same as above:
+The code used is essentially the same as above except that reads are split by:
+
+* Forward-paired
+* Reverse-paired
+* Forward-unpaired
+* Reverse-unpaired
+
+Since only paired reads will be kept downstream this allows for assessing the quality independently.
 
 ```
-fastqc -t 39 -o /projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/trimmed/fastqc/fastqc_1stStage_trimmed *fastq.gz
+fastqc -o /projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/trimmed/fastqc/fastqc_1stStage_trimmed *fastq.gz
 
-multiqc -m fastqc .
+multiqc -m fastqc -n forwardPaired_multiqc_report *1P_fastqc*
+multiqc -m fastqc -n reversePaired_multiqc_report *2P_fastqc*
+multiqc -m fastqc -n forwardUnpaired_multiqc_report *1U_fastqc*
+multiqc -m fastqc -n reverseUnpaired_multiqc_report *2U_fastqc*
 ```
