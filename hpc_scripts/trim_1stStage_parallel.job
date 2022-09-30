@@ -1,0 +1,41 @@
+#!/bin/bash
+
+#Job Name
+#BSUB -J trim_1stStage_parallel
+
+#Project
+#BSUB -P fun_gen_1
+
+#Queue
+#BSUB -q normal
+
+#Cores
+#BSUB -n 39
+
+#RAM per core (Use M and G for Mb and Gb)
+#BSUB -R "rusage[mem=30G]"
+
+#Walltime
+#BSUB -W 96:00
+
+#Output File (Absolute path! Can use job name variable)
+#BSUB -o /home/mae120/logs/microhabSel_LC-WGS/trim_1stStage_parallel.out
+
+###################################################################
+#SETUP
+#change directory
+cd /projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/raw_reads/1stStage/
+
+#SET VARIABLES
+SAMPLETABLE=/projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/sample_table.tsv
+TRIMMOMATIC=~/software/local/Trimmomatic-0.39/trimmomatic-0.39.jar
+THREADS=4 #This is the optimal number of threads for Trimmomatic since the output compression is limiting and further increase leads to no speedup. Can use GNU parallel though!
+ADAPTERS=~/software/local/Trimmomatic-0.39/adapters/NexteraPE-PE.fa
+R1_SUFFIX=_R1_001.fastq.gz
+OUTDIR=/projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/trimmed/1stStage/
+OUT_SUFFIX=_trimmed.fastq.gz
+
+#CODE
+#Parallelize Trimmomatic. Since Trimmo is optimized at 4 threads, we can take advantage of the up to 40 cores on the cluster. However, since Trimmo uses 4 threads already we reduce the jobload per core to 25% (=1/4 threads).
+parallel -j 25% --header : --colsep '\t' java -jar $TRIMMOMATIC PE -threads $THREADS -basein {fastq_prefix}$R1_SUFFIX -baseout $OUTDIR{sample}$OUT_SUFFIX ILLUMINACLIP:$ADAPTERS:2:30:10:1:true SLIDINGWINDOW:4:15 LEADING:3 TRAILING:3 :::: $SAMPLETABLE
+

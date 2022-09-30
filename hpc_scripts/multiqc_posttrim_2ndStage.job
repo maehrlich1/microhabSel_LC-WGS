@@ -1,0 +1,33 @@
+#!/bin/bash
+
+#Job Name
+#BSUB -J multiqc_posttrim_2ndStage
+
+#Project
+#BSUB -P fun_gen_1
+
+#Queue
+#BSUB -q normal
+
+#Cores
+#BSUB -n 5
+
+#RAM per core (Use M and G for Mb and Gb)
+#BSUB -R "rusage[mem=3G]"
+
+#Walltime
+#BSUB -W 00:30
+
+#Output File (Absolute path! Can use job name variable)
+#BSUB -o /home/mae120/logs/microhabSel_LC-WGS/multiqc_posttrim_2ndStage.out
+
+###################################################################
+#SETUP
+#change directory
+cd /projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/trimmed/fastqc/2ndStage
+
+#CODE
+multiqc -m fastqc -n forwardPaired_multiqc_report *1P_fastqc*
+multiqc -m fastqc -n reversePaired_multiqc_report *2P_fastqc*
+multiqc -m fastqc -n forwardUnpaired_multiqc_report *1U_fastqc*
+multiqc -m fastqc -n reverseUnpaired_multiqc_report *2U_fastqc*
