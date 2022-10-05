@@ -1,0 +1,42 @@
+#!/bin/bash
+
+#Job Name
+#BSUB -J alignment_benchmark[1-6]
+
+#Queue
+#BSUB -q general
+
+#Cores
+#BSUB -n 5
+
+#RAM per core (MB)
+#BSUB -R "rusage[mem=3000]"
+
+#Walltime
+#BSUB -W 01:00
+
+#Project
+#BSUB -P fun_gen_1
+
+#Output File (Absolute path! Can use job name variable)
+#BSUB -o /nethome/mae120/logs/microhabSel_LC-WGS/alignment_benchmark.out
+
+###################################################################
+#SETUP
+#load modules
+module load python/2.7.15 
+#change directory
+cd ~/software/local/Teaser
+
+#Extract sample ID and parameters using job index env variable. Remember to account for the header in the sample table.
+SETUP_FILE=$(awk -v jindex=$LSB_JOBINDEX 'NR==jindex {print}' /projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/trimmed/teaserTest/setup.txt)
+
+#Print which sample is being processed to output in color.
+GREEN='\033[32;1m'
+COL_RESET='\033[0m'
+echo -e "${GREEN}Processing sample ${SETUP_FILE}${COL_RESET}"
+
+#CODE
+
+./teaser.py $SETUP_FILE
+
