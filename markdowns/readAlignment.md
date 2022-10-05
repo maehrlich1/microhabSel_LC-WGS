@@ -47,6 +47,9 @@ By providing the `YAML` file, `Teaser` is simply run by:
 * Memory Usage
 * Mapping quality
 
-Based on this, `bwa mem` was chosen as the best mapper for this data set. It showed the best response curve in a plot of read count as a function of mapping quality. Although it did not map the most reads, it mapped most reads with a mapping quality of 20 and above.[Rplot.pdf](https://github.com/maehrlich1/microhabSel_LC-WGS/files/9718908/Rplot.pdf)
+Based on this, `bwa mem` was chosen as the best mapper for this data set. It showed the best response curve in a plot of read count as a function of mapping quality. Although it did not map the most reads, it mapped most reads with a mapping quality of 20 and above.
+[Rplot.pdf](https://github.com/maehrlich1/microhabSel_LC-WGS/files/9718908/Rplot.pdf)
+
+## Read Alignment
 
 
