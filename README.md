@@ -27,7 +27,7 @@ A second round of QC was performed to check proper trimming behavior.
 * Aligner Testing
 * Alignment
 
-Different alignment software was benchmarked using `Teaser`.
+Different alignment software was benchmarked using `Teaser`. `Bowtie2` in `--sensitive-local` mode was shown to give the best compromise between percent mapping reads and runtime.
 
 ### BAM Filtering
 
