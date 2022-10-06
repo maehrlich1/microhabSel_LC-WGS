@@ -26,23 +26,20 @@ A second round of QC was performed to check proper trimming behavior.
 
 * Aligner Testing
 * Alignment
+* Mapping QC
 
 Different alignment software was benchmarked using `Teaser`. `bwa mem` was shown to give the best compromise between percent mapping reads, mapping quality and runtime.
 `bwa mem -M -a` was used to align reads from all samples to the *Fundulus heteroclitus* reference genome version 4.1.
-
-### Alignment Filtering
-
-* Non-unique mapping
-* Mapping Quality
-* Dedup
+`Qualimap2` was used to assess alignment statistics for each sequencing run.
 
 ### Seq Run Aggregation
 
 * Merging
-* Dedup again
 
 ### BAM Cleaning
 
+* Dedup
 * Clip overlap
 * Indel realignment
 * Remove high depth
+* Mapping Quality?
