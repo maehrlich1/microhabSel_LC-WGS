@@ -42,4 +42,6 @@ Different alignment software was benchmarked using `Teaser`. `bwa mem` was shown
 * Clip overlap
 * Indel realignment
 * Remove high depth
-* Mapping Quality?
+* Post-filter mapping QC
+* Mapping Quality? -No, do it at ANGSD step and have it depend on the histogram.
+
