@@ -52,4 +52,10 @@ Based on this, `bwa mem` was chosen as the best mapper for this data set. It sho
 
 ## Read Alignment
 
-
+Paired reads were aligned using `bwa mem` as follows:
+```
+bwa mem -M -a reference.fa $SAMPLE_ID'_trimmed_1P.fastq.gz' $SAMPLE_ID'_trimmed_2P.fastq.gz' > $SAMPLE_ID'.sam'
+```
+The `-M -a` options:
+* Mark shorter split hits as secondary (For Picard compatibility)
+* Outputs all found alignments for unpaired reads also. These are marked as secondary.
