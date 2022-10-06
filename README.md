@@ -26,8 +26,8 @@ A second round of QC was performed to check proper trimming behavior.
 
 * Aligner Testing
 * Alignment
-* Convert to BAM and sort
-* Mapping QC
+* Convert to BAM and sort (use array dependency)
+* Mapping QC with Qualimap2 for each seq run
 
 Different alignment software was benchmarked using `Teaser`. `bwa mem` was shown to give the best compromise between percent mapping reads, mapping quality and runtime.
 `bwa mem -M -a` was used to align reads from all samples to the *Fundulus heteroclitus* reference genome version 4.1.
@@ -35,9 +35,12 @@ Different alignment software was benchmarked using `Teaser`. `bwa mem` was shown
 
 ### Seq Run Aggregation
 
-* Merging
+* No need to add read groups and library information. 1st and 2nd stage are the SAME LIBRARY. Adding read groups is not necessary since MarkDuplicates SHOULD treat reads as coming from the same source.
+* Merging (use BamUtil or samtools merge)
 
-### BAM Cleaning
+### Alignment Polishing
+
+Check order!
 
 * Dedup
 * Clip overlap
