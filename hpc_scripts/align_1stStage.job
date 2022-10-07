@@ -1,0 +1,39 @@
+#!/bin/bash
+
+#Job Name and array call. Square brackets = array size, % = max. number of jobs to run at a time.
+#BSUB -J align_1stStage[1-962]%7
+
+#Project
+#BSUB -P fun_gen_1
+
+#Queue
+#BSUB -q normal
+
+#Cores (Max 40)
+#BSUB -n 4
+
+#RAM per node/host (Use M and G for Mb and Gb). The second part forces all cores on the same host.
+#BSUB -R "rusage[mem=3000M] span[hosts=1]"
+
+#Walltime
+#BSUB -W 08:00
+
+#Output File (Absolute path! The -oo option overwrites the the output file.)
+#BSUB -oo /home/mae120/logs/microhabSel_LC-WGS/align_1stStage.out
+
+###################################################################
+#SETUP
+#Load Modules
+#Change Directory
+cd /projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/trimmed/1stStage
+
+#Extract sample and parameters using job index. Remember to account for the header in the sample table.
+SAMPLE_ID=$(awk -v jindex=$LSB_JOBINDEX 'NR==jindex+1 {print $3}' /projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/sample_table.tsv)
+
+#Print which sample is being processed in color.
+GREEN='\033[32;1m'
+COL_RESET='\033[0m'
+echo -e "${GREEN}Processing sample ${SAMPLE_ID}${COL_RESET}"
+
+#CODE
+bwa mem -t $LSB_DJOB_NUMPROC -M -a $REF $SAMPLE_ID'_trimmed_1P.fastq.gz' $SAMPLE_ID'_trimmed_2P.fastq.gz' > /projects2/rsmas/dcrawford/MAE/microhabSel_LC-WGS/bam/1stStage/$SAMPLE_ID'_1stStage.sam'
