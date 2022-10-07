@@ -59,3 +59,8 @@ bwa mem -M -a reference.fa $SAMPLE_ID'_trimmed_1P.fastq.gz' $SAMPLE_ID'_trimmed_
 The `-M -a` options:
 * Mark shorter split hits as secondary (For Picard compatibility)
 * Outputs all found alignments for unpaired reads also. These are marked as secondary.
+
+Before further processing `SAM` files were converted to `BAM` format and sorted using `sambamba 0.8.2`:
+```
+sambamba view -t 4 -S -f bam mysample.sam | sambamba sort -t 4 -m 8G -o mysample.sorted.bam' /dev/stdin && rm mysample.sam
+```
