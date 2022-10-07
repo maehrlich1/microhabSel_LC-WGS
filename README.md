@@ -36,7 +36,7 @@ Different alignment software was benchmarked using `Teaser`. `bwa mem` was shown
 ### Seq Run Aggregation
 
 * No need to add read groups and library information. 1st and 2nd stage are the SAME LIBRARY. Adding read groups is not necessary since MarkDuplicates SHOULD treat reads as coming from the same source.
-* Merging (use BamUtil or samtools merge)
+* Merging (use BamUtil or samtools merge or sambamba merge)
 
 ### Alignment Polishing
 
@@ -44,7 +44,7 @@ Check order!
 
 * Dedup
 * Clip overlap
-* Indel realignment
+* Indel realignment - Prob not necessary
 * Remove high depth
 * Post-filter mapping QC
 * Mapping Quality? -No, do it at ANGSD step and have it depend on the histogram.
