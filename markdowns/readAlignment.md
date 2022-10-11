@@ -64,3 +64,9 @@ Before further processing `SAM` files were converted to `BAM` format and sorted 
 ```
 sambamba view -t 4 -S -f bam mysample.sam | sambamba sort -t 4 -m 8G -o mysample.sorted.bam' /dev/stdin && rm mysample.sam
 ```
+## Alignment Quality Control
+
+`Qualimap` was used to assess alignment statistics across all samples, grouped by sequencing batch. Java memory size was expanded beyond the size of the largest `BAM` file for faster processing.
+```
+qualimap multi-bamqc --java-mem-size=4G -r -d qualimap_list.tsv -outdir ./
+```
