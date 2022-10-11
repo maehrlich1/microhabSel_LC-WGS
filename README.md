@@ -30,8 +30,8 @@ A second round of QC was performed to check proper trimming behavior.
 * Mapping QC with Qualimap2 for each seq run
 
 Different alignment software was benchmarked using `Teaser`. `bwa mem` was shown to give the best compromise between percent mapping reads, mapping quality and runtime.
-`bwa mem -M -a` was used to align reads from all samples to the *Fundulus heteroclitus* reference genome version 4.1.
-`Qualimap2` was used to assess alignment statistics for each sequencing run.
+`bwa mem` was used to align reads from all samples to the *Fundulus heteroclitus* reference genome version 4.1.
+`Qualimap2` was used to assess alignment statistics for each sequencing batch.
 
 ### Seq Run Aggregation
 
