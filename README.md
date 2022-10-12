@@ -47,5 +47,5 @@ Check order!
 * Indel realignment - Prob not necessary
 * Remove high depth
 * Post-filter mapping QC
-* Mapping Quality? -No, do it at ANGSD step and have it depend on the histogram.
+* Mapping Quality? -No, do it at ANGSD step and have it depend on the histogram (cutoff of 20 or 25 is good)
 
