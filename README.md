@@ -46,7 +46,7 @@ Check order!
 * Dedup
 * Clip overlap
 * BQSR? - GATK recommends it but papers don't do it...
-* Indel realignment? - No, because will use BAQ option in ANGSD
+* Indel realignment? - No, because will use BAQ option in ANGSD (use -baq 2 option!, higher sensitivity)
 * Mapping Quality? -No, do it at ANGSD step and have it depend on the histogram (cutoff of 20 or 25 is good)
 * Remove high depth? - No, do it at ANGSD step
 
