@@ -33,14 +33,9 @@ Different alignment software was benchmarked using `Teaser`. `bwa mem` was shown
 `bwa mem` was used to align reads from all samples to the *Fundulus heteroclitus* reference genome version 4.1.
 `Qualimap2` was used to assess alignment statistics for each sequencing batch.
 
-### Seq Run Aggregation
-
-* Add read groups - not necessary for MarkDuplicates (1st & 2nd stage are the same LIBRARY but were run on different LANES) but will be for eventual BQSR
-* Merging (samtools merge or GATK4 MergeSamFiles)
-
 ### Alignment Polishing
 
-Check order!
+* Read Merging
 
 * Dedup
 * Clip overlap
@@ -48,6 +43,6 @@ Check order!
 * Indel realignment? - No, because will use BAQ option in ANGSD (use -baq 2 option!, higher sensitivity)
 * Mapping Quality? -No, do it at ANGSD step and have it depend on the histogram (cutoff of 20 or 25 is good)
 * Remove high depth? - No, do it at ANGSD step
-
 * Post-filter mapping QC
 
+Reads of the same sample resulting from different flowcells were merged
