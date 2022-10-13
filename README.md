@@ -35,9 +35,8 @@ Different alignment software was benchmarked using `Teaser`. `bwa mem` was shown
 
 ### Seq Run Aggregation
 
-* No need to add read groups and library information. 1st and 2nd stage are the SAME LIBRARY. Adding read groups is not necessary since MarkDuplicates SHOULD treat reads as coming from the same source.
 * Add read groups - not necessary for MarkDuplicates (1st & 2nd stage are the same LIBRARY but were run on different LANES) but will be for eventual BQSR
-* Merging (samtools merge or GATK4 MergeBamAlignments)
+* Merging (samtools merge or GATK4 MergeSamFiles)
 
 ### Alignment Polishing
 
