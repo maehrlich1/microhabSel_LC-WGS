@@ -42,10 +42,11 @@ Different alignment software was benchmarked using `Teaser`. `bwa mem` was shown
 
 Check order!
 
+* Mapping Quality? -No, do it at ANGSD step and have it depend on the histogram (cutoff of 20 or 25 is good)
 * Dedup
 * Clip overlap
-* Indel realignment - Prob not necessary
 * Remove high depth
+* Indel realignment - Prob not necessary
+
 * Post-filter mapping QC
-* Mapping Quality? -No, do it at ANGSD step and have it depend on the histogram (cutoff of 20 or 25 is good)
 
