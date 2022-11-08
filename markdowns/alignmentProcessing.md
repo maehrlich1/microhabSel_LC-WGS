@@ -33,3 +33,11 @@ Once read group info has been assigned, the `BAM` files resulting from sequencin
 ```
 gatk --java-options -Xmx4g MergeSamFiles -I '1stStage/'$SAMPLE_ID'_1stStage.RG.sorted.bam' -I '2ndStage/'$SAMPLE_ID'_2ndStage.RG.sorted.bam' -O 'merged/'$SAMPLE_ID'.merged.sorted.bam' --USE_THREADING true
 ```
+
+## Marking Duplicate reads
+
+Using `Picard MarkDuplicates`
+
+## Clipping Overlapping Read Pairs
+
+Using `Bamutil`
