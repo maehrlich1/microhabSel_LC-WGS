@@ -36,8 +36,16 @@ gatk --java-options -Xmx4g MergeSamFiles -I '1stStage/'$SAMPLE_ID'_1stStage.RG.s
 
 ## Marking Duplicate reads
 
-Using `Picard MarkDuplicates`
+Duplicate reads are removed using `Picard MarkDuplicates`. Duplication stats are printed to a separate file.
 
-## Clipping Overlapping Read Pairs
+```
+java -Xmx4g -jar $PICARD_DIR/MarkDuplicates.jar I=$SAMPLE_ID'.merged.sorted.bam' O=$SAMPLE_ID'.merged.sorted.dedup.bam' M=$SAMPLE_ID'_dupstat.txt' REMOVE_DUPLICATES=true
+```
 
-Using `Bamutil`
+## Clip Overlapping Read Pairs
+
+Overlapping paired-end reads are clipped such that sequence information in the overlapping section is not duplicated. Read information for the higher quality read (usually the forward read) is retained and the secondary read clipped. For this, the `clipoverlap` function in `Bamutil` was used.
+
+```
+bam clipOverlap --in $SAMPLE_ID'.merged.sorted.dedup.bam' --out $SAMPLE_ID'.merged.sorted.dedup.overlapclip.bam' --stats
+```
