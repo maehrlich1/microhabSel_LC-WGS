@@ -44,7 +44,7 @@ Duplicate reads were removed using `Picard Tools 1.103` `MarkDuplicates` and ove
 Final alignment QC was performed with `Qualimap2` to generate per-sample depth and coverage statistics.
 
 
-* BQSR? - GATK recommends it but papers don't do it...
+* BQSR? - GATK recommends it but papers don't do it. Need known variants file, which needs to be bootstrapped. Could do a second round if needed, keep going for now.
 * Indel realignment? - No, because will use BAQ option in ANGSD (use -baq 2 option!, higher sensitivity)
 * Mapping Quality? -No, do it at ANGSD step and have it depend on the histogram (cutoff of 20 or 25 is good)
 * Remove high depth? - No, do it at ANGSD step
