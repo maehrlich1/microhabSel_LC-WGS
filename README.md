@@ -4,11 +4,11 @@ This repository contains the scripts used in the analysis of within-generation s
 
 The repository contains markdown files in `/markdowns` detailing the analysis process and parameter justifications. `/hps_scripts` contain code with minimal annotation used to run the analysis on HPC servers at the University of Miami.
 
-## Raw Data
+### Raw Data
 
 Libraries were prepared from DNA isolated from 963 *Fundulus heteroclitus* individuals. Each individual was uniquely indexed and the library pool was sequenced in a two-stage manner in order to normalize sequencing depth across individuals. A total of 19 lanes were sequenced on the Illumina HiSeq 4000 yielding 2.1 Tbases of raw read data.
 
-## Brief Summary of Analysis Pipeline
+## Analysis Pipeline
 
 See `/markdowns` for more detail.
 
@@ -49,4 +49,6 @@ Final alignment QC was performed with `Qualimap2` to generate per-sample depth a
 * Mapping Quality? -No, do it at ANGSD step and have it depend on the histogram (cutoff of 20 or 25 is good)
 * Remove high depth? - No, do it at ANGSD step
 
-Reads of the same sample resulting from different flowcells were merged
+### Variant Calling
+
+* ANGSD: dont forget to: Use BAQ option 2, filter for MQ, filter for high depth
