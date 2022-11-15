@@ -26,7 +26,6 @@ A second round of QC was performed to check proper trimming behavior.
 
 * Aligner Testing
 * Alignment
-* Convert to BAM and sort (use array dependency)
 * Mapping QC with Qualimap2 for each seq run
 
 Different alignment software was benchmarked using `Teaser`. `bwa mem` was shown to give the best compromise between percent mapping reads, mapping quality and runtime.
@@ -35,14 +34,19 @@ Different alignment software was benchmarked using `Teaser`. `bwa mem` was shown
 
 ### Alignment Polishing
 
-* Read Merging
+* Read Merging across sequencing batches
+* Remove Duplicate Reads
+* Clip overlapping paired-end reads
+* Post-filter mapping QC
 
-* Dedup
-* Clip overlap
+Reads were given read-group information and merged across sequencing batches to give one `bam` file per sample.
+Duplicate reads were removed using `Picard Tools 1.103` `MarkDuplicates` and overlapping paired-end reads were clipped to avoid overestimating sequence support at the SNP calling stage.
+Final alignment QC was performed with `Qualimap2` to generate per-sample depth and coverage statistics.
+
+
 * BQSR? - GATK recommends it but papers don't do it...
 * Indel realignment? - No, because will use BAQ option in ANGSD (use -baq 2 option!, higher sensitivity)
 * Mapping Quality? -No, do it at ANGSD step and have it depend on the histogram (cutoff of 20 or 25 is good)
 * Remove high depth? - No, do it at ANGSD step
-* Post-filter mapping QC
 
 Reads of the same sample resulting from different flowcells were merged
