@@ -26,7 +26,7 @@ A second round of QC was performed to check proper trimming behavior.
 
 * Aligner Testing
 * Alignment
-* Mapping QC with Qualimap2 for each seq run
+* Mapping QC for each sequencing batch
 
 Different alignment software was benchmarked using `Teaser`. `bwa mem` was shown to give the best compromise between percent mapping reads, mapping quality and runtime.
 `bwa mem` was used to align reads from all samples to the *Fundulus heteroclitus* reference genome version 4.1.
@@ -34,21 +34,23 @@ Different alignment software was benchmarked using `Teaser`. `bwa mem` was shown
 
 ### Alignment Polishing
 
-* Read Merging across sequencing batches
-* Remove Duplicate Reads
-* Clip overlapping paired-end reads
+* Merging reads across sequencing batches
+* Removing duplicate reads
+* Clipping overlapping paired-end reads
 * Post-filter mapping QC
 
-Reads were given read-group information and merged across sequencing batches to give one `bam` file per sample.
-Duplicate reads were removed using `Picard Tools 1.103` `MarkDuplicates` and overlapping paired-end reads were clipped to avoid overestimating sequence support at the SNP calling stage.
+Reads were given read-group information and merged across sequencing batches resulting in one `bam` file per sample.
+Duplicate reads were removed using `Picard Tools 1.103` `MarkDuplicates` and overlapping paired-end reads were clipped using the `bamUtil 1.0.14` `clipOverlap` tool to avoid overestimating sequence support at the SNP calling stage.
 Final alignment QC was performed with `Qualimap2` to generate per-sample depth and coverage statistics.
 
-
+Note:
 * BQSR? - GATK recommends it but papers don't do it. Need known variants file, which needs to be bootstrapped. Could do a second round if needed, keep going for now.
 * Indel realignment? - No, because will use BAQ option in ANGSD (use -baq 2 option!, higher sensitivity)
-* Mapping Quality? -No, do it at ANGSD step and have it depend on the histogram (cutoff of 20 or 25 is good)
-* Remove high depth? - No, do it at ANGSD step
+* Mapping Quality Filter? - No, do it at ANGSD variant calling step. Use cutoff depending on histogram of MQs (cutoff of 20 or 25 is good)
+* Remove high depth locations? - No, do it at ANGSD variant calling step
 
 ### Variant Calling
+
+Variant calling was performed using 
 
 * ANGSD: dont forget to: Use BAQ option 2, filter for MQ, filter for high depth
