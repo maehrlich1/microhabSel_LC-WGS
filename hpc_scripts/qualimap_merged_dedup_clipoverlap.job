@@ -1,0 +1,32 @@
+#!/bin/bash
+
+#Job Name and array call. Square brackets = array size, % = max. number of jobs to run at a time.
+#BSUB -J qualimap_merged_dedup_overlapclip
+
+#Project
+#BSUB -P fun_gen_1
+
+#Queue
+#BSUB -q normal
+
+#Cores (Max 40)
+#BSUB -n 8
+
+#RAM per node/host (Use M and G for Mb and Gb). The second part forces all cores on the same host.
+#BSUB -R "rusage[mem=48G] span[hosts=1]"
+
+#Walltime
+#BSUB -W 54:00
+
+#Output File (Absolute path! The -oo option overwrites the output file.)
+#BSUB -oo /home/mae120/logs/microhabSel_LC-WGS/qualimap_merged_dedup_overlapclip.out
+
+###################################################################
+#SETUP
+#Load Modules
+#Change Directory
+cd /projectnb/dcrawford/MAE/microhabSel_LC-WGS/bam/qualimap/merged_dedup_overlapclip
+
+#CODE
+unset DISPLAY
+qualimap multi-bamqc --java-mem-size=38G -r -d qualimap_list.tsv -outdir ./
