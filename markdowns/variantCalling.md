@@ -32,4 +32,4 @@
 
 -minMaf (think about it)
 
--baq 2 (i think it was 2, right?)
+-baq 2 (I decided on 2)
