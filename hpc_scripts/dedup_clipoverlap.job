@@ -1,0 +1,43 @@
+#!/bin/bash
+
+#Job Name and array call. Square brackets = array size, % = max. number of jobs to run at a time.
+#BSUB -J dedup_clipoverlap[1-956]%50
+
+#Project
+#BSUB -P fun_gen_1
+
+#Queue
+#BSUB -q general
+
+#Cores (Max 40)
+#BSUB -n 1
+
+#RAM per core (Mb). The second part forces all cores on the same host.
+#BSUB -R "rusage[mem=4500] span[hosts=1]"
+
+#Walltime
+#BSUB -W 12:00
+
+#Output File (Absolute path! The -oo option overwrites the the output file.)
+#BSUB -o /nethome/mae120/logs/microhabSel_LC-WGS/dedup_clipoverlap.out
+
+###################################################################
+#SETUP
+#Load Modules
+#Change Directory
+cd /projectnb/dcrawford/MAE/microhabSel_LC-WGS/bam/merged
+
+#Extract sample and parameters using job index. Remember to account for the header in the sample table.
+SAMPLE_ID=$(awk -v jindex=$LSB_JOBINDEX 'NR==jindex+1 {print $1}' /projectnb/dcrawford/MAE/microhabSel_LC-WGS/sample_table_merged.tsv)
+
+#Print which sample is being processed in color.
+GREEN='\033[32;1m'
+COL_RESET='\033[0m'
+echo -e "${GREEN}Processing sample ${SAMPLE_ID}${COL_RESET}"
+
+#CODE
+#Remove duplicate reads
+java -Xmx4g -jar $PICARD_DIR/MarkDuplicates.jar I=$SAMPLE_ID'.merged.sorted.bam' O=$SAMPLE_ID'.merged.sorted.dedup.bam' M=$SAMPLE_ID'_dupstat.txt' REMOVE_DUPLICATES=true
+
+#Clip overlapping paired reads
+bam clipOverlap --in $SAMPLE_ID'.merged.sorted.dedup.bam' --out $SAMPLE_ID'.merged.sorted.dedup.overlapclip.bam' --stats
