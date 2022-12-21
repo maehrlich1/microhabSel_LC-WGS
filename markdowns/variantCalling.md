@@ -30,6 +30,6 @@
 
 -SNP_pval 1e-6 (seems like what everybody uses)
 
--minMaf (think about it)
+-minMaf (think about it. Maybe not do minMaf but rather minimum number of alternative allele counts! i.e. a MAF of 0.01 is fine if it is supported by 10 individuals of 1000)
 
 -baq 2 (I decided on 2)
