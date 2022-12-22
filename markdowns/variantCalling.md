@@ -1,5 +1,27 @@
 # Variant Calling
 
+## Depth Distribution
+
+For variant calling several filters are applied to the BAM files. Some of these filters take into account low or excess sequencing depth.
+In order to inform the filtering approach for variant calling the depth distribution across all samples and genomic positions is generated using `ANGSD`.
+Here, we only assess depth statistics on the 24 *F. heteroclitus* chromosomes to avoid bias in the unplaced scaffolds.
+In order to speed up processing, the analysis is split by chromosome and one instance of `ANGSD` is run per chromosome:
+```
+angsd -bam master_bamlist.txt -out master -r $CHROM: \  # Input and output files and the chromosome to be processed.
+-doCounts 1 -doDepth 1 -maxDepth 100000 -dumpCounts 1 \ # Calls to geenrate allele counts and depth statistics.
+-minMapQ 20 -minQ 20 \                                  # Filters on BAM files: minimum mapping quality and base quality.
+-P 4                                                    # ANGSD only takes a maximum of 8 threads. Due to I/O operations being the bottleneck.
+```
+Depth output files were subsequently plotted in `R`.
+
+
+## SNP Calling
+
+
+
+
+
+
 ## To Do:
 
 -GL 1 (in most publications)
