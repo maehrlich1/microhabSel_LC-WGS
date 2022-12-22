@@ -44,13 +44,12 @@ Duplicate reads were removed using `Picard Tools 1.103` `MarkDuplicates` and ove
 Final alignment QC was performed with `Qualimap2` to generate per-sample depth and coverage statistics.
 
 Note:
-* BQSR? - GATK recommends it but papers don't do it. Need known variants file, which needs to be bootstrapped. Could do a second round if needed, keep going for now.
-* Indel realignment? - No, because will use BAQ option in ANGSD (use -baq 2 option!, higher sensitivity)
-* Mapping Quality Filter? - No, do it at ANGSD variant calling step. Use cutoff depending on histogram of MQs (cutoff of 20 or 25 is good)
-* Remove high depth locations? - No, do it at ANGSD variant calling step
+The following filters/options were **NOT** applied at the alignment polishing step:
+
+* BQSR - GATK recommends this but previous publications do not apply it. Requires known variants file. If this doesn't exist, data needs to be bootstrapped. Could potentially do a second round of variant calling if needed.
+* Indel realignment - Will use BAQ option in ANGSD during variant calling (-baq 2 option, higher sensitivity)
+* Mapping Quality Filter - Will use filter in ANGSD at variant calling step. Use cutoff depending on distribution of MQs (cutoff of 20 or 25 is reasonable)
 
 ### Variant Calling
 
-Variant calling was performed using 
-
-* ANGSD: dont forget to: Use BAQ option 2, filter for MQ, filter for high depth
+Variant calling was performed using `ANGSD`. Depth filter setting were informed using the global distribution of sequencing depth.
