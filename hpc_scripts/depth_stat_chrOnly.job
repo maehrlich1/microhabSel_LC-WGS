@@ -13,10 +13,10 @@
 #BSUB -n 4
 
 #RAM per node/host (Use M and G for Mb and Gb). The second part forces all cores on the same host.
-#BSUB -R "rusage[mem=4G] span[hosts=1]"
+#BSUB -R "rusage[mem=8G] span[hosts=1]"
 
 #Walltime
-#BSUB -W 14:00
+#BSUB -W 34:00
 
 #Output File (Absolute path! The -oo option overwrites the the output file. BUT this will also overwrite the output of each array element!)
 #BSUB -o /home/mae120/logs/microhabSel_LC-WGS/depth_stat_chrOnly.out
@@ -37,6 +37,6 @@ echo -e "${GREEN}Processing chromosome ${CHROM}${COL_RESET}"
 
 #CODE
 angsd -bam master_bamlist.txt -out $CHROM -r $CHROM: \
--doCounts 1 -doDepth 1 -maxDepth 10000 -dumpCounts 1 \
+-doCounts 1 -dumpCounts 2 -doDepth 1 -maxDepth 3500 \
 -minMapQ 20 -minQ 20 \
 -P 4 #ANGSD only takes a maximum of 8 threads. Due to I/O operations being the bottleneck.
