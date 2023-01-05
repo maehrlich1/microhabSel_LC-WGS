@@ -52,4 +52,4 @@ The following filters/options were **NOT** applied at the alignment polishing st
 
 ### Variant Calling
 
-Variant calling was performed using `ANGSD`. Depth filter setting were informed using the global distribution of sequencing depth.
+Variant calling was performed using `ANGSD`. Depth filter settings were informed using the global distribution of sequencing depth. Minimum number of individuals per site was informed using the completeness distribution (No. of individuals with at least 1 read).
