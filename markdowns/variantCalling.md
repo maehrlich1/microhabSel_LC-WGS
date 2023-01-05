@@ -7,12 +7,14 @@ In order to inform the filtering approach for variant calling the depth distribu
 Here, we only assess depth statistics on the 24 *F. heteroclitus* chromosomes to avoid bias in the unplaced scaffolds.
 In order to speed up processing, the analysis is split by chromosome and one instance of `ANGSD` is run per chromosome:
 ```
+CHROM=$(awk -v jindex=$LSB_JOBINDEX 'NR==jindex {print $0}' chr_only.txt)
+
 angsd -bam master_bamlist.txt -out master -r $CHROM: \  # Input and output files and the chromosome to be processed.
--doCounts 1 -doDepth 1 -maxDepth 100000 -dumpCounts 1 \ # Calls to geenrate allele counts and depth statistics.
+-doCounts 1 -dumpCounts 2 -doDepth 1 -maxDepth 3500 \   # Calls to generate read counts and depth statistics. dumpCounts 2 produces per individual read counts which is needed for subsequent plotting. maxDepth of 2x expected depth seems like a good target
 -minMapQ 20 -minQ 20 \                                  # Filters on BAM files: minimum mapping quality and base quality.
 -P 4                                                    # ANGSD only takes a maximum of 8 threads. Due to I/O operations being the bottleneck.
 ```
-Depth output files were subsequently plotted in `R`.
+Depth output files were subsequently plotted in `R`. Specifically, the global depth distribution and the completeness (No. of individuals with at least 1 read) were plotted.
 
 ## SNP Calling
 
