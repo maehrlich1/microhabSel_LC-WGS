@@ -39,7 +39,7 @@ Depth output files were subsequently plotted in `R`. Specifically, the global de
 
 **NOT** -setMinDepth (think about it, maybe use depth distribution? Probably not necessary since I have minInd which already sets a lower bound!)
 
--setMaxDepth (Use depth distribution. +2 s.d. probably)
+-setMaxDepth (Use depth distribution. +3 s.d. = 1600!!!)
 
 -minInd (This already defines the minDepth since there is 1 read per ind. Use depth distribution to define?)
 
