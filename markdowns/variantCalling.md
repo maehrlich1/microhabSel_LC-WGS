@@ -64,3 +64,9 @@ Both the global depth distribution (`XXX.depthGlobal`) and the distribution of t
 -minMaf 0.05 (think about it. Maybe not do minMaf but rather minimum number of alternative allele counts! i.e. a MAF of 0.01 is fine if it is supported by 10 individuals of 1000. Change according to minInd!! MAF = 2/MinInd (to have at least 2 alternative alleles...). Later saw that there was sufficient coverage even fo 1% MAF but still went with 5% to be conservative. Also 1% SNPs do not contain much information and swamp the dataset.)
 
 -no HWE filter due to strong selection!
+
+DOWNSTREAM
+
+DONT USE REGIONS FILE FORMAT FOR SITE SELECTION - SLOWWWW
+
+Use the -sites argument and supply the relevant chromosome using -r. Should be faster.
