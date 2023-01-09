@@ -29,7 +29,7 @@ Both the global depth distribution (`XXX.depthGlobal`) and the distribution of t
 
 
 
-## To Do:
+## Do:
 
 -GL 1 (in most publications)
 
@@ -41,20 +41,26 @@ Both the global depth distribution (`XXX.depthGlobal`) and the distribution of t
 
 -doCounts 1 (required for -setMaxDepth)
 
-## Filters:
+## Alignment Filters:
+
+-minQ 20 (from literature)
+
+-minMapQ 20 (from literature)
+
+-baq 2 (equivalent to SAMTools)
+
+## Depth Filters
 
 **NOT** -setMinDepth (think about it, maybe use depth distribution? Probably not necessary since I have minInd which already sets a lower bound!)
 
--setMaxDepth (Use depth distribution. +3 s.d. = 1600!!!)
+-setMaxDepth 1600 (Used depth distribution, fit normal curve to uppper end then +3 s.d.)
 
--minInd (This already defines the minDepth since there is 1 read per ind. Use depth distribution to define?)
+-minInd 478 (This already defines the minDepth since there is 1 read per ind. Used depth distribution inflection point for cutoff = almost exactly half of individuals. Used 50% of individuals as cutoff.)
 
--minQ (probably 20)
+## SNP Filters
 
--minMapQ (also probably 20)
+-SNP_pval 1e-6 (from literature)
 
--SNP_pval 1e-6 (seems like what everybody uses)
+-minMaf 0.05 (think about it. Maybe not do minMaf but rather minimum number of alternative allele counts! i.e. a MAF of 0.01 is fine if it is supported by 10 individuals of 1000. Change according to minInd!! MAF = 2/MinInd (to have at least 2 alternative alleles...). Later saw that there was sufficient coverage even fo 1% MAF but still went with 5% to be conservative. Also 1% SNPs do not contain much information and swamp the dataset.)
 
--minMaf (think about it. Maybe not do minMaf but rather minimum number of alternative allele counts! i.e. a MAF of 0.01 is fine if it is supported by 10 individuals of 1000. Change according to minInd!! MAF = 2/MinInd (to have at least 2 alternative alleles...))
-
--baq 2 (I decided on 2)
+-no HWE filter due to strong selection!
