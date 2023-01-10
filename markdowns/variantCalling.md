@@ -24,49 +24,52 @@ Both the global depth distribution (`XXX.depthGlobal`) and the distribution of t
 
 ## SNP Calling
 
+The following `ANGSD` script was run for calling SNPs across the entire *F. heteroclitus* genome.
+```
+angsd -bam ../master_bamlist.txt -ref $REF -out $CHROM -r $CHROM: \
+-doCounts 1 -doMajorMinor 1 -doMaf 1 -GL 1 -doGlf 2 \
+-minMapQ 20 -baq 2 -minQ 20 \
+-minInd 478 -setMaxDepth 1600 \
+-SNP_pval 1e-6 -minMaf 0.05 \
+-P 4 #ANGSD only takes a maximum of 8 threads. Due to I/O operations being the bottleneck.
+```
+
+See below for a more thorough description/explanation of the parameters chosen:
+
+### Processing Parameters:
+
+* `-GL 1` (`SAMTools` genotype likelihood model)
+* `-doGlf 2` (Outputs GLs in `BEAGLE` format)
+* `-doMajorMinor 1` (Infers major and minor alleles from data using GLs)
+* `-doMaf 1` (Calculates MAF from GLs)
+* `-doCounts 1` (Counts reads per site. Required for `-setMaxDepth`)
+
+### Alignment Filters:
+
+* `-minQ 20` (Base quality filter)
+* `-minMapQ 20` (Mapping quality filter)
+* `-baq 2` (`SAMTools` model for recalibrating base quality scores around indels. Similar to indel realignment.)
+
+### Depth Filters:
+
+* `-setMaxDepth 1600` (Inferred from the global depth distribution by fitting a normal curve to the data and calculating +3 standard deviations.)
+* `-minInd 478` (Inferred from the distribution of individual coverage i.e. the number of individuals with at least 1 read per site. Inflection point of the lower tail used as a cutoff. This was almost exactly 50% of individuals which was used as the cutoff.)
+
+**NOTE:** `-setMinDepth` was **NOT** used as a depth filter since `-minInd` already sets a lower bound.
+
+### SNP Filters:
+
+* `-SNP_pval 1e-6` (To define polymorphic sites.)
+* `-minMaf 0.05` (Would like at least 5 reads confirming an alternative allele. Given `-minInd 478` this allows for a MAF filter of 1%. However, a 5% cutoff was chosen as a more conservative measure.)
 
 
 
-
-
-## Do:
-
--GL 1 (in most publications)
-
--doMajorMinor 1 (infers from data itself using GLs)
-
--doGlf 2 (output Beagle format GL file, most common)
-
--doMaf 1 (calculate MAF. use 1 just because Therkildsen uses it, could also do 2, a combination of both or even add 8)
-
--doCounts 1 (required for -setMaxDepth)
-
-## Alignment Filters:
-
--minQ 20 (from literature)
-
--minMapQ 20 (from literature)
-
--baq 2 (equivalent to SAMTools)
-
-## Depth Filters
-
-**NOT** -setMinDepth (think about it, maybe use depth distribution? Probably not necessary since I have minInd which already sets a lower bound!)
-
--setMaxDepth 1600 (Used depth distribution, fit normal curve to uppper end then +3 s.d.)
-
--minInd 478 (This already defines the minDepth since there is 1 read per ind. Used depth distribution inflection point for cutoff = almost exactly half of individuals. Used 50% of individuals as cutoff.)
-
-## SNP Filters
-
--SNP_pval 1e-6 (from literature)
-
--minMaf 0.05 (think about it. Maybe not do minMaf but rather minimum number of alternative allele counts! i.e. a MAF of 0.01 is fine if it is supported by 10 individuals of 1000. Change according to minInd!! MAF = 2/MinInd (to have at least 2 alternative alleles...). Later saw that there was sufficient coverage even fo 1% MAF but still went with 5% to be conservative. Also 1% SNPs do not contain much information and swamp the dataset.)
-
--no HWE filter due to strong selection!
 
 DOWNSTREAM
 
 DONT USE REGIONS FILE FORMAT FOR SITE SELECTION - SLOWWWW
 
 Use the -sites argument and supply the relevant chromosome using -r. Should be faster.
+
+-no HWE filter due to strong selection!
+
