@@ -61,6 +61,7 @@ See below for a more thorough description/explanation of the parameters chosen:
 
 * `-SNP_pval 1e-6` (To define polymorphic sites.)
 * `-minMaf 0.05` (Would like at least 5 reads confirming an alternative allele. Given `-minInd 478` this allows for a MAF filter of 1%. However, a 5% cutoff was chosen as a more conservative measure.)
+* `-rmTriallelic 0.05` (Remove sites with a significant chance of being triallelic.)
 
 
 
