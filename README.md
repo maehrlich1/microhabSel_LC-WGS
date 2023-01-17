@@ -50,6 +50,13 @@ The following filters/options were **NOT** applied at the alignment polishing st
 * Indel realignment - Will use BAQ option in ANGSD during variant calling (-baq 2 option, higher sensitivity)
 * Mapping Quality Filter - Will use filter in ANGSD at variant calling step. Use cutoff depending on distribution of MQs (cutoff of 20 or 25 is reasonable)
 
-### Variant Calling
+### Raw Variant Calling
 
-Variant calling was performed using `ANGSD`. Depth filter settings were informed using the global distribution of sequencing depth. Minimum number of individuals per site was informed using the completeness distribution (No. of individuals with at least 1 read).
+Variant calling was performed using `ANGSD`. See markdown file for details.
+
+### Variant Filtering
+
+Depth filter settings were informed using the global distribution of sequencing depth.
+Minimum number of individuals per site was informed using the completeness distribution (No. of individuals with at least 1 read).
+SNPs were further filtered according to multiple bias estimators (Strand Bias, Base- and Mapping Quality Bias and Position Bias).
+LD statistics were generated and the SNP set was LD pruned to minimize autocorrelation.
