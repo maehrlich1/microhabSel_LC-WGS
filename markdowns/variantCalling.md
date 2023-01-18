@@ -27,10 +27,10 @@ Both the global depth distribution (`XXX.depthGlobal`) and the distribution of t
 The following `ANGSD` script was run for calling SNPs across the entire *F. heteroclitus* genome.
 ```
 angsd -bam ../master_bamlist.txt -ref $REF -out $CHROM'.raw' -r $CHROM':' \
--doCounts 1 -doMajorMinor 1 -doMaf 1 -GL 1 -doGlf 1 \
+-doCounts 1 -doMajorMinor 1 -doMaf 1 -GL 1 -doGlf 2 \
 -minMapQ 20 -baq 2 -minQ 20 \
 -minInd 478 -setMaxDepth 1600 \
--SNP_pval 1e-6 -minMaf 0.05 -rmTriallelic 0.01 \
+-SNP_pval 1e-6 -minMaf 0.05 -rmTriallelic 1e-4 \
 -P 4 #ANGSD only takes a maximum of 8 threads. Due to I/O operations being the bottleneck.
 ```
 
@@ -39,7 +39,7 @@ See below for a more thorough description/explanation of the parameters chosen:
 ### Processing Parameters:
 
 * `-GL 1` (`SAMTools` genotype likelihood model)
-* `-doGlf 1` (Outputs GLs in binary, log10-scaled genotype likelihood format. Best to use for downstream analysis.)
+* `-doGlf 2` (Outputs GLs in `BEAGLE` genotype likelihood format. Best to use for downstream analysis.)
 * `-doMajorMinor 1` (Infers major and minor alleles from data using GLs)
 * `-doMaf 1` (Calculates MAF from GLs)
 * `-doCounts 1` (Counts reads per site. Required for `-setMaxDepth`)
@@ -61,7 +61,7 @@ See below for a more thorough description/explanation of the parameters chosen:
 
 * `-SNP_pval 1e-6` (To define polymorphic sites.)
 * `-minMaf 0.05` (Would like at least 5 reads confirming an alternative allele. Given `-minInd 478` this allows for a MAF filter of 1%. However, a 5% cutoff was chosen as a more conservative measure.)
-* `-rmTriallelic 0.01` (Remove sites with a significant chance of being triallelic.)
+* `-rmTriallelic 1e-4` (Remove sites with a significant chance of being triallelic. Threshold commonly used in the literature.)
 
 ## Variant Bias Filtering
 
