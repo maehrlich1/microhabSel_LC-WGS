@@ -22,7 +22,7 @@ zcat $CHROM'.counts.gz' | tail -n +2 | mawk '{c=0;for (i = 1; i <= NF; ++i) if($
 ```
 Both the global depth distribution (`XXX.depthGlobal`) and the distribution of the number of individuals with at least 1 read were plotted in `R`. By inspecting the inflection points of the distribution, the maximum depth per site and the minimum number of individuals per site for variant calling were extracted. 
 
-## SNP Calling
+## Raw SNP Calling
 
 The following `ANGSD` script was run for calling SNPs across the entire *F. heteroclitus* genome.
 ```
@@ -74,14 +74,7 @@ After the raw set of SNPs has been called it is further filtered to remove any a
 * Mapping Quality Bias  - whether the reads of one or the other allele have systematically higher mapping qualities.
 * Position Bias         - whether one or the other allele is systematically found near the ends of reads.
 
-Bias statistics were calculated using the `-doSnpStat` option in `ANGSD` using the following code. **NOTE:** Could and probably should use GL files as input for faster processing:
-
-```
-angsd -bam ../master_bamlist.txt -rf $CHROM'.raw.regions' -sites $CHROM'.raw.sites' -out $CHROM'.raw' \
--doMajorMinor 3 -GL 1 -doHWE 1 -doSnpStat 1 \
--P 4 #ANGSD only takes a maximum of 8 threads. Due to I/O operations being the bottleneck.
-```
-The distributions of bias statistics were subsequently plotted in `R` and filtering cutoffs chosen according to the tails. Here the specific filtering cutoffs were to keep SNPs with:
+Bias statistics were printed in the `.snpStat.gz` file. The distributions of bias statistics were plotted in `R` and filtering cutoffs chosen according to the tails. Here the specific filtering cutoffs were to keep SNPs with:
 
 * Strand Bias (GATK Implementation)         < 0.6
 * Strand Bias (Fisher Score, Phred-scaled)  < 50
@@ -89,7 +82,7 @@ The distributions of bias statistics were subsequently plotted in `R` and filter
 * Mapping Quality Bias (Phred-scaled)       < 20
 * Position Bias (Phred-scaled)              < 75
 
-The filtered SNP set was then used to produce filtered GL and MAF files in `ANGSD` for further downstream processing.
+The list of filtered SNPs was then used to manually filter the raw GL and MAF files for further downstream processing.
 
 ## LD Pruning
 
