@@ -82,7 +82,14 @@ Bias statistics were printed in the `.snpStat.gz` file. The distributions of bia
 * Mapping Quality Bias (Phred-scaled)       < 20
 * Position Bias (Phred-scaled)              < 75
 
-The list of filtered SNPs was then used to manually filter the raw GL and MAF files for further downstream processing.
+The list of filtered SNPs was then used to filter the raw beagle GL and MAF files for further downstream processing using the following `mawk` script:
+```
+for CHROM in global.filt.chr
+do
+  cat $(zcat $CHROM'.raw.beagle.gz' | head -n 1) $(zcat $CHROM'.raw.beagle.gz' | mawk 'NR==FNR{array[$1"_"$2];next} $1 in array' $CHROM'.filt.sites' -) | gzip > $CHROM'.filt.beagle.gz'
+  cat $(zcat $CHROM'.raw.mafs.gz' | head -n 1) $(zcat $CHROM'.raw.mafs.gz' | mawk 'NR==FNR{array[$1,$2];next} ($1,$2) in array' $CHROM'.filt.sites' -) | gzip > $CHROM'.filt.mafs.gz'
+done
+```
 
 ## LD Pruning
 
