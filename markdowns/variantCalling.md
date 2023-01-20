@@ -7,8 +7,6 @@ In order to inform the filtering approach for variant calling the depth distribu
 Here, we only assess depth statistics on the 24 *F. heteroclitus* chromosomes to avoid bias in the unplaced scaffolds.
 In order to speed up processing, the analysis is split by chromosome and one instance of `ANGSD` is run per chromosome:
 ```
-CHROM=$(awk -v jindex=$LSB_JOBINDEX 'NR==jindex {print $0}' chr_only.txt)
-
 angsd -bam master_bamlist.txt -out master -r $CHROM: \  # Input and output files and the chromosome to be processed.
 -doCounts 1 -dumpCounts 2 -doDepth 1 -maxDepth 3500 \   # Calls to generate read counts and depth statistics. dumpCounts 2 produces per individual read counts which is needed for subsequent plotting. maxDepth of 2x expected depth seems like a good target
 -minMapQ 20 -baq 2 -minQ 20 \                           # Filters on BAM files: minimum mapping quality and base quality and adjusted base quality scrores.
@@ -90,4 +88,15 @@ cat <(zcat $CHROM'.raw.mafs.gz' | head -n 1) <(zcat $CHROM'.raw.mafs.gz' | mawk 
 
 ## LD Pruning
 
-Pairwise LD statistics between SNPs were obtained using `ngsLD` with GLs as input.
+Pairwise LD statistics between SNPs were obtained using `ngsLD` with GLs as input:
+```
+N_SITES=$(wc -l $CHROM'.filt.sites')
+
+ngsLD --geno $CHROM'.filt.beagle.gz' --probs --n_ind 956 --n_sites $N_SITES --pos $CHROM'.filt.sites' --outH $CHROM'.filt.ld' \
+--max_kb_dist 10 --min_maf 0 \
+--n_threads 10
+```
+A `--max_kb_dist 10` was chosen since previous *F. heteroclitus* dataset did not show significant linkage beyond 10Kb.
+A `--min_maf 0` was chosen to speed up computation since sites had been MAF filtered previously already.
+
+LD decay was then plotted in order to inform cutoff values for LD pruning. 
