@@ -99,4 +99,19 @@ ngsLD --geno $CHROM'.filt.beagle.gz' --probs --n_ind 956 --n_sites $N_SITES --po
 A `--max_kb_dist 10` was chosen since previous *F. heteroclitus* dataset did not show significant linkage beyond 10Kb.
 A `--min_maf 0` was chosen to speed up computation since sites had been MAF filtered previously already.
 
-LD decay was then plotted in order to inform cutoff values for LD pruning. 
+Before plotting LD decay, LD output files were randomply downsampled to ~100 million pairwise comparisons in order to speed up calculations. Anything above 100,000 pairwise comparisons gives a decent distribution. To downsample the following `mawk` script was used (note the `FNR==1` maintains the header line:
+```
+zcat chr.filt.ld.gz | mawk '{if rand() <= 0.01 || FNR==1) print $0}' | gzip > chr.filt.sample1p.ld.gz
+```
+Next LD decay was plotted using the `fit_LDdecay.R` script supplied with `ngsLD`:
+```
+Rscript --vanilla --slave ~/software/local/ngsLD/scripts/fit_LDdecay.py --ld_files input.txt --header --col 7 --out chr.filt.sample1p.ld.plot \
+--n_ind 956 --ld r2 --recomb_rate 2.34 --fit_boot 1000 --fit_bin_size 50 --fit_level 2
+```
+
+The LD decay curve informed reasonable cutoff values for LD pruning. More specifically, SNPs with r2 values above 0.1 were considered to be in linkage. The SNP set was pruned using a `Python` script supplied with `ngsLD`:
+```
+python3 ~/software/local/ngsLD/scripts/prune_ngsLD.py \
+--input $CHROM'.filt.ld.gz' --output $CHROM'.filt.prune' \
+--max_dist 10000 --min_weight 0.1
+```
