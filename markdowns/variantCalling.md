@@ -85,37 +85,3 @@ The list of filtered SNPs was then used to filter the raw beagle GL and MAF file
 cat <(zcat $CHROM'.raw.beagle.gz' | head -n 1) <(zcat $CHROM'.raw.beagle.gz' | mawk 'NR==FNR{array[$1"_"$2];next} $1 in array' $CHROM'.filt.sites' -) | gzip > $CHROM'.filt.beagle.gz'
 cat <(zcat $CHROM'.raw.mafs.gz' | head -n 1) <(zcat $CHROM'.raw.mafs.gz' | mawk 'NR==FNR{array[$1,$2];next} ($1,$2) in array' $CHROM'.filt.sites' -) | gzip > $CHROM'.filt.mafs.gz'
 ```
-
-## LD Pruning
-
-Pairwise LD statistics between SNPs were obtained using `ngsLD` with GLs as input:
-```
-N_SITES=$(wc -l $CHROM'.filt.sites')
-
-ngsLD --geno $CHROM'.filt.beagle.gz' --probs --n_ind 956 --n_sites $N_SITES --pos $CHROM'.filt.sites' \
---max_kb_dist 10 --min_maf 0 \
---n_threads 10 \
-| cut -f 1,4,7,8,9,10,11 | gzip > $CHROM'.filt.ld.gz'
-```
-A `--max_kb_dist 10` was chosen since previous *F. heteroclitus* dataset did not show significant linkage beyond 10Kb.
-A `--min_maf 0` was chosen to speed up computation since sites had been MAF filtered previously already.
-The final `cut` call removes columns containing base information that interferes with downstream analysis.
-
-Before plotting LD decay, LD output files were randomply downsampled to ~100 million pairwise comparisons in order to speed up calculations. Anything above 100,000 pairwise comparisons gives a decent distribution. To downsample the following `mawk` script was used:
-```
-zcat chr.filt.ld.gz | mawk '{if rand() <= 0.01) print $0}' | gzip > chr.filt.sample1p.ld.gz
-```
-Next LD decay was plotted using the `fit_LDdecay.R` script supplied with `ngsLD`:
-```
-Rscript --vanilla --slave ~/software/local/ngsLD/scripts/fit_LDdecay.py --ld_files input.txt --out chr.filt.sample1p.ld.plot \
---n_ind 956 --ld r2 --recomb_rate 2.34 --fit_boot 1000 --fit_bin_size 50 --fit_level 2
-```
-The LD decay curve informed reasonable cutoff values for LD pruning. More specifically, SNPs with r2 values above 0.1 were considered to be in linkage. Strongest linked sites were identified using a `Python` script supplied with `ngsLD`:
-```
-python3 ~/software/local/ngsLD/scripts/prune_ngsLD.py \
---input $CHROM'.filt.ld.gz' --output $CHROM'.filt.lnkd' \
---max_dist 10000 --min_weight 0.1 --keep_heavy
-```
- **NOTE:** The `--keep_heavy` option was used to output strongly linked sites rather than a pruned dataset. This is due to the `.ls.gz` files not containing all SNP information since only SNPs in proximity were considered for LD calculation. Distant SNPs do not feature in the `.ld.gz` files and will therefore not be retained although they are unlinked. For the same reason, scaffolds with only 1 SNP have empty LD files. These SNPs should however be included in the final SNP set.
- 
- To generate a pruned SNP set, the linked sites were removed from the filtered dataset:
