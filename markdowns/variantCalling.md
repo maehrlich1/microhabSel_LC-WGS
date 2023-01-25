@@ -92,12 +92,14 @@ Pairwise LD statistics between SNPs were obtained using `ngsLD` with GLs as inpu
 ```
 N_SITES=$(wc -l $CHROM'.filt.sites')
 
-ngsLD --geno $CHROM'.filt.beagle.gz' --probs --n_ind 956 --n_sites $N_SITES --pos $CHROM'.filt.sites' --out $CHROM'.filt.ld' \
+ngsLD --geno $CHROM'.filt.beagle.gz' --probs --n_ind 956 --n_sites $N_SITES --pos $CHROM'.filt.sites' \
 --max_kb_dist 10 --min_maf 0 \
---n_threads 10
+--n_threads 10 \
+| cut -f 1,4,7,8,9,10,11 | gzip > $CHROM'.filt.ld.gz'
 ```
 A `--max_kb_dist 10` was chosen since previous *F. heteroclitus* dataset did not show significant linkage beyond 10Kb.
 A `--min_maf 0` was chosen to speed up computation since sites had been MAF filtered previously already.
+The final `cut` call removes columns containing bas information that interfere with downstream analysis.
 
 Before plotting LD decay, LD output files were randomply downsampled to ~100 million pairwise comparisons in order to speed up calculations. Anything above 100,000 pairwise comparisons gives a decent distribution. To downsample the following `mawk` script was used (note the `FNR==1` maintains the header line:
 ```
@@ -105,7 +107,7 @@ zcat chr.filt.ld.gz | mawk '{if rand() <= 0.01 || FNR==1) print $0}' | gzip > ch
 ```
 Next LD decay was plotted using the `fit_LDdecay.R` script supplied with `ngsLD`:
 ```
-Rscript --vanilla --slave ~/software/local/ngsLD/scripts/fit_LDdecay.py --ld_files input.txt --header --col 7 --out chr.filt.sample1p.ld.plot \
+Rscript --vanilla --slave ~/software/local/ngsLD/scripts/fit_LDdecay.py --ld_files input.txt --out chr.filt.sample1p.ld.plot \
 --n_ind 956 --ld r2 --recomb_rate 2.34 --fit_boot 1000 --fit_bin_size 50 --fit_level 2
 ```
 
