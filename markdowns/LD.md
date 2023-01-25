@@ -40,5 +40,7 @@ python3 ~/software/local/ngsLD/scripts/prune_ngsLD.py \
  
  To generate the pruned, chromosomal SNP set, the linked sites were removed from the filtered dataset:
  ```
+ zcat $CHROM'.filt.beagle.gz' | mawk -F '[:\t]' 'NR==FNR{array[$1"_"$2];next} !($1 in array)||FNR==1' $CHROM'.filt.lnkd' - | gzip > $CHROM'.filt.beagle.gz'
  
+zcat $CHROM'.filt.mafs.gz' | mawk 'NR==FNR{array[$1,$2];next} !(($1,$2) in array)' $CHROM'.filt.lnkd' - | gzip > $CHROM'.filt.mafs.gz'
  ```
