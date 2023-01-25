@@ -92,7 +92,7 @@ Pairwise LD statistics between SNPs were obtained using `ngsLD` with GLs as inpu
 ```
 N_SITES=$(wc -l $CHROM'.filt.sites')
 
-ngsLD --geno $CHROM'.filt.beagle.gz' --probs --n_ind 956 --n_sites $N_SITES --pos $CHROM'.filt.sites' --outH $CHROM'.filt.ld' \
+ngsLD --geno $CHROM'.filt.beagle.gz' --probs --n_ind 956 --n_sites $N_SITES --pos $CHROM'.filt.sites' --out $CHROM'.filt.ld' \
 --max_kb_dist 10 --min_maf 0 \
 --n_threads 10
 ```
