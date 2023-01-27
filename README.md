@@ -1,19 +1,15 @@
 # Selection among microhabitats using low-coverage WGS
-
 This repository contains the scripts used in the analysis of within-generation selection among *Fundulus heteroclitus* individuals inhabiting distinct microhabitats. Low-coverage whole genome sequencing (LC-WGS) was performed on ~1K individuals sampled in distinct microhabitatss and at different time points to estimate allele frequency changes within a single generation as a result of microhabitat selection. Allele frequency changes were also associated with previously documented phenotypic divergence among microhabitat residents. Phenotypic divergence among microhabitat residents was previously published here (LINK) whereas the results of this LC-WGS project are published in XXXX.
 
 The repository contains markdown files in `/markdowns` detailing the analysis process and parameter justifications. `/hps_scripts` contain code with minimal annotation used to run the analysis on HPC servers at the University of Miami.
 
 ### Raw Data
-
 Libraries were prepared from DNA isolated from 963 *Fundulus heteroclitus* individuals. Each individual was uniquely indexed and the library pool was sequenced in a two-stage manner in order to normalize sequencing depth across individuals. A total of 19 lanes were sequenced on the Illumina HiSeq 4000 yielding 2.1 Tbases of raw read data.
 
 ## Analysis Pipeline
-
 See `/markdowns` for more detail.
 
 ### Raw read processing
-
 * QC of raw reads
 * Adapter and base-quality trimming
 * QC post-trimming
@@ -23,7 +19,6 @@ Adapters were trimmed from raw reads and low quality bases clipped using `Trimmo
 A second round of QC was performed to check proper trimming behavior.
 
 ### Alignment
-
 * Aligner Testing
 * Alignment
 * Mapping QC for each sequencing batch
@@ -33,7 +28,6 @@ Different alignment software was benchmarked using `Teaser`. `bwa mem` was shown
 `Qualimap2` was used to assess alignment statistics for each sequencing batch.
 
 ### Alignment Polishing
-
 * Merging reads across sequencing batches
 * Removing duplicate reads
 * Clipping overlapping paired-end reads
@@ -50,13 +44,15 @@ The following filters/options were **NOT** applied at the alignment polishing st
 * Indel realignment - Will use BAQ option in ANGSD during variant calling (-baq 2 option, higher sensitivity)
 * Mapping Quality Filter - Will use filter in ANGSD at variant calling step. Use cutoff depending on distribution of MQs (cutoff of 20 or 25 is reasonable)
 
-### Raw Variant Calling
-
+### Variant Calling
 Variant calling was performed using `ANGSD`. See markdown file for details.
-
-### Variant Filtering
 
 Depth filter settings were informed using the global distribution of sequencing depth.
 Minimum number of individuals per site was informed using the completeness distribution (No. of individuals with at least 1 read).
 SNPs were further filtered according to multiple bias estimators (Strand Bias, Base- and Mapping Quality Bias and Position Bias).
 LD statistics were generated and the SNP set was LD pruned to minimize autocorrelation.
+
+### Population Structure
+`PCANGSD` was used to calculate the global covariance matrix among samples and a PCA was plotted in `R`.
+
+`ANGSD` was used to generate folded site-frequency spectra from which *Fst* among timepoints and populations was estimated.
