@@ -7,16 +7,18 @@ In order to inform the filtering approach for variant calling the depth distribu
 Here, we only assess depth statistics on the 24 *F. heteroclitus* chromosomes to avoid bias in the unplaced scaffolds.
 In order to speed up processing, the analysis is split by chromosome and one instance of `ANGSD` is run per chromosome:
 ```
+CHROM=$(awk -v jindex=$LSB_JOBINDEX 'NR==jindex {print $0}' ../chr.chr)
+
 angsd -bam master_bamlist.txt -ref $REF -out $CHROM -r $CHROM: \  # Input and output files and the chromosome to be processed.
--doCounts 1 -dumpCounts 2 -doDepth 1 -maxDepth 3500 \   # Calls to generate read counts and depth statistics. dumpCounts 2 produces per individual read counts which is needed for subsequent plotting. maxDepth of 2x expected depth seems like a good target
--minMapQ 20 -baq 2 -minQ 20 \                           # Filters on BAM files: minimum mapping quality and base quality and adjusted base quality scrores.
--P 4                                                    # ANGSD only takes a maximum of 8 threads. Due to I/O operations being the bottleneck.
+-doCounts 1 -dumpCounts 2 -doDepth 1 -maxDepth 3500 \             # Calls to generate read counts and depth statistics. dumpCounts 2 produces per individual read counts which is needed for subsequent plotting. maxDepth of 2x expected depth seems like a good target
+-minMapQ 20 -baq 2 -minQ 20 \                                     # Filters on BAM files: minimum mapping quality and base quality and adjusted base quality scores.
+-P 4                                                              # ANGSD only takes a maximum of 8 threads. Due to I/O operations being the bottleneck.
 ```
 A custom `mawk` script was used to parse the output of `-dumpCounts 2` (`$CHROM.counts.gz` files) to obtain the number of individuals with at least one read for each site. These `$CHROM.counts.gz` files contain read counts per individual. Header lines were ignored, and the number of individuals with at least 1 read were counted for every genomic position.
 ```
-CHROM=$(awk -v jindex=$LSB_JOBINDEX 'NR==jindex {print $0}' chr_only.txt)
+CHROM=$(awk -v jindex=$LSB_JOBINDEX 'NR==jindex {print $0}' ../chr.chr)
 
-zcat $CHROM'.counts.gz' | tail -n +2 | mawk '{c=0;for (i = 1; i <= NF; ++i) if($i>0){++c}{print c}}' | gzip > $CHROM'.indPerSite.gz'
+zcat $CHROM'.counts.gz' | mawk 'NR>1 {c=0; for(i = 1; i <= NF; ++i)if($i>0){++c} {print c}}' | gzip > $CHROM'.indPerSite.gz'
 ```
 Both the global depth distribution (`XXX.depthGlobal`) and the distribution of the number of individuals with at least 1 read were plotted in `R`. By inspecting the inflection points of the distribution, the maximum depth per site and the minimum number of individuals per site for variant calling were extracted. 
 
