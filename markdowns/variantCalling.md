@@ -84,6 +84,6 @@ Bias statistics were printed in the `.snpStat.gz` file. The distributions of bia
 
 The list of filtered SNPs was then used to filter the raw beagle GL and MAF files for further downstream processing using the following `mawk` script:
 ```
-cat <(zcat $CHROM'.raw.beagle.gz' | head -n 1) <(zcat $CHROM'.raw.beagle.gz' | mawk 'NR==FNR{array[$1"_"$2];next} $1 in array' $CHROM'.filt.pos' -) | gzip > $CHROM'.filt.beagle.gz'
-cat <(zcat $CHROM'.raw.mafs.gz' | head -n 1) <(zcat $CHROM'.raw.mafs.gz' | mawk 'NR==FNR{array[$1,$2];next} ($1,$2) in array' $CHROM'.filt.pos' -) | gzip > $CHROM'.filt.mafs.gz'
+zcat $CHROM'.raw.beagle.gz' | mawk 'NR==FNR{array[$1"_"$2];next} $1 in array || FNR==1' $CHROM'.filt.pos' -) | gzip > $CHROM'.filt.beagle.gz'
+zcat $CHROM'.raw.mafs.gz' | mawk 'NR==FNR{array[$1,$2];next} ($1,$2) in array || FNR==1' $CHROM'.filt.pos' -) | gzip > $CHROM'.filt.mafs.gz'
 ```
