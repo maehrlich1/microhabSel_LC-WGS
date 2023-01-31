@@ -1,6 +1,6 @@
 # Linkage Disequilibrium
 
-LD calculation was performed in order to produce an LD pruned dataset for analyses where independence of data (SNPs) is required.
+LD calculation was performed in order to produce an LD pruned dataset for analyses where independence of data (SNPs) is required. In order to produce a conservative, high-quality SNP set, variants located on scaffolds were ignored.
 Specifically, LD was calculated between pairs of SNPs within a given proximity. Next, LD decay was plotted and the shape of the curve was used to inform LD pruning.
 
 ## LD Calculation
@@ -23,7 +23,7 @@ zcat $CHROM'.filt.ld.gz' | mawk '{if rand() <= 0.01) print $0}' | gzip > chr.fil
 ```
 Next LD decay was plotted using the `fit_LDdecay.R` script supplied with `ngsLD`:
 ```
-Rscript --vanilla --slave ~/software/local/ngsLD/scripts/fit_LDdecay.py --ld_files input.txt --out chr.filt.sample1p.ld.plot \
+Rscript --vanilla --slave fit_LDdecay.R --ld_files input.txt --out chr.filt.sample1p.ld.plot \
 --n_ind 938 --ld r2 --recomb_rate 2.34 --fit_boot 1000 --fit_bin_size 50 --fit_level 2
 ```
 ## LD Pruning
@@ -31,13 +31,23 @@ The LD decay curve informed reasonable cutoff values for LD pruning. More specif
 LD pruning was not performed on scaffolds since defining physical distances between scaffolds is not possible.
 Strongest linked sites were identified using a `Python` script supplied with `ngsLD`:
 ```
-python3 ~/software/local/ngsLD/scripts/prune_ngsLD.py \
+python3 prune_ngsLD.py \
 --input $CHROM'.filt.ld.gz' --output $CHROM'.filt.lnkd' \
 --max_dist 10000 --min_weight 0.1 --keep_heavy
 ```
- **NOTE:** The `--keep_heavy` option was used to output strongly linked sites rather than a pruned dataset. This is due to the `.ls.gz` files not containing all SNP information since only SNPs in proximity were considered for LD calculation. Distant SNPs do not feature in the `.ld.gz` files and will therefore not be retained although they are unlinked. For the same reason, chromosomes/scaffolds with only 1 SNP have empty LD files. These SNPs should however be included in the final SNP set.
- 
- To generate the pruned, chromosomal SNP set, the linked sites were removed from the filtered dataset:
+**NOTE:** The `--keep_heavy` option was used to output strongly linked sites rather than a pruned dataset. This is due to the `.ls.gz` files not containing all SNP information since only SNPs in proximity were considered for LD calculation. Distant SNPs do not feature in the `.ld.gz` files and will therefore not be retained although they are unlinked. For the same reason, chromosomes/scaffolds with only 1 SNP have empty LD files. These SNPs should however be included in the final SNP set. To avoid throwing an error when `prune_ngsLD.py` encounters an empty `.ld.gz` file, an `if` statement can be included.
+```
+if [ $(zcat $CHROM'.filt.ld.gz' | head -c 1 | wc -c) == "0" ]; then
+
+	echo $CHROM".filt.ld.gz is empty. Probably no SNPs in proximity for LD to have been computed in the first place. No linkage here."
+
+else
+	python3 prune_ngsLD.py \
+	--input $CHROM'.filt.ld.gz' --output $CHROM'.filt.lnkd' \
+	--max_dist 10000 --min_weight 0.1 --keep_heavy
+fi
+```
+To generate the pruned, chromosomal SNP set, the linked sites were removed from the filtered dataset:
  ```
  zcat $CHROM'.filt.beagle.gz' | mawk -F '[:\t]' 'NR==FNR{array[$1"_"$2];next} !($1 in array) || FNR==1' $CHROM'.filt.lnkd' - | gzip > $CHROM'.filt.prune.beagle.gz'
  zcat $CHROM'.filt.mafs.gz' | mawk -F '[:\t]' 'NR==FNR{array[$1,$2];next} !(($1,$2) in array) || FNR==1' $CHROM'.filt.lnkd' - | gzip > $CHROM'.filt.prune.mafs.gz'
