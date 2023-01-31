@@ -77,13 +77,13 @@ After the raw set of SNPs has been called it is further filtered to remove any a
 Bias statistics were printed in the `.snpStat.gz` file. The distributions of bias statistics were plotted in `R` and filtering cutoffs chosen according to the tails. Here the specific filtering cutoffs were to keep SNPs with:
 
 * Strand Bias (GATK Implementation)         < 0.6
-* Strand Bias (Fisher Score, Phred-scaled)  < 50
+* Strand Bias (Fisher Score, Phred-scaled)  < 40
 * Base Quality Bias (Phred-scaled)          < 50
 * Mapping Quality Bias (Phred-scaled)       < 20
 * Position Bias (Phred-scaled)              < 75
 
 The list of filtered SNPs was then used to filter the raw beagle GL and MAF files for further downstream processing using the following `mawk` script:
 ```
-cat <(zcat $CHROM'.raw.beagle.gz' | head -n 1) <(zcat $CHROM'.raw.beagle.gz' | mawk 'NR==FNR{array[$1"_"$2];next} $1 in array' $CHROM'.filt.sites' -) | gzip > $CHROM'.filt.beagle.gz'
-cat <(zcat $CHROM'.raw.mafs.gz' | head -n 1) <(zcat $CHROM'.raw.mafs.gz' | mawk 'NR==FNR{array[$1,$2];next} ($1,$2) in array' $CHROM'.filt.sites' -) | gzip > $CHROM'.filt.mafs.gz'
+cat <(zcat $CHROM'.raw.beagle.gz' | head -n 1) <(zcat $CHROM'.raw.beagle.gz' | mawk 'NR==FNR{array[$1"_"$2];next} $1 in array' $CHROM'.filt.pos' -) | gzip > $CHROM'.filt.beagle.gz'
+cat <(zcat $CHROM'.raw.mafs.gz' | head -n 1) <(zcat $CHROM'.raw.mafs.gz' | mawk 'NR==FNR{array[$1,$2];next} ($1,$2) in array' $CHROM'.filt.pos' -) | gzip > $CHROM'.filt.mafs.gz'
 ```
