@@ -8,14 +8,13 @@ Pairwise LD statistics between SNPs were obtained using `ngsLD` with GLs as inpu
 ```
 N_SITES=$(wc -l $CHROM'.filt.pos')
 
-ngsLD --geno $CHROM'.filt.beagle.gz' --probs --n_ind 956 --n_sites $N_SITES --pos $CHROM'.filt.sites' \
+ngsLD --geno $CHROM'.filt.beagle.gz' --probs --n_ind 938 --n_sites $N_SITES --pos $CHROM'.filt.pos' \
 --max_kb_dist 10 --min_maf 0 \
 --n_threads 10 \
-| cut -f 1,4,7,8,9,10,11 | gzip > $CHROM'.filt.ld.gz'
+| gzip > $CHROM'.filt.ld.gz'
 ```
 A `--max_kb_dist 10` was chosen since previous *F. heteroclitus* dataset did not show significant linkage beyond 10Kb.
 A `--min_maf 0` was chosen to speed up computation since sites had been MAF filtered previously already.
-The final `cut` call removes columns containing base information that interferes with downstream analysis.
 
 ## LD Decay
 Before plotting LD decay, LD output files were randomply downsampled to ~100 million pairwise comparisons in order to speed up calculations. Anything above 100,000 pairwise comparisons gives a decent distribution. To downsample the following `mawk` script was used:
