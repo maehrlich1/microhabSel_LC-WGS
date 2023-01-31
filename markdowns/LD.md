@@ -6,7 +6,7 @@ Specifically, LD was calculated between pairs of SNPs within a given proximity. 
 ## LD Calculation
 Pairwise LD statistics between SNPs were obtained using `ngsLD` with GLs as input:
 ```
-N_SITES=$(wc -l $CHROM'.filt.sites')
+N_SITES=$(wc -l $CHROM'.filt.pos')
 
 ngsLD --geno $CHROM'.filt.beagle.gz' --probs --n_ind 956 --n_sites $N_SITES --pos $CHROM'.filt.sites' \
 --max_kb_dist 10 --min_maf 0 \
@@ -40,6 +40,6 @@ python3 ~/software/local/ngsLD/scripts/prune_ngsLD.py \
  
  To generate the pruned, chromosomal SNP set, the linked sites were removed from the filtered dataset:
  ```
- zcat $CHROM'.filt.beagle.gz' | mawk -F '[:\t]' 'NR==FNR{array[$1"_"$2];next} !($1 in array)||FNR==1' $CHROM'.filt.lnkd' - | gzip > $CHROM'.filt.prune.beagle.gz'
- zcat $CHROM'.filt.mafs.gz' | mawk -F '[:\t]' 'NR==FNR{array[$1,$2];next} !(($1,$2) in array)||FNR==1' $CHROM'.filt.lnkd' - | gzip > $CHROM'.filt.prune.mafs.gz'
+ zcat $CHROM'.filt.beagle.gz' | mawk -F '[:\t]' 'NR==FNR{array[$1"_"$2];next} !($1 in array) || FNR==1' $CHROM'.filt.lnkd' - | gzip > $CHROM'.filt.prune.beagle.gz'
+ zcat $CHROM'.filt.mafs.gz' | mawk -F '[:\t]' 'NR==FNR{array[$1,$2];next} !(($1,$2) in array) || FNR==1' $CHROM'.filt.lnkd' - | gzip > $CHROM'.filt.prune.mafs.gz'
  ```
