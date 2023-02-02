@@ -52,3 +52,4 @@ To generate the pruned, chromosomal SNP set, the linked sites were removed from 
  zcat $CHROM'.filt.beagle.gz' | mawk -F '[:\t]' 'NR==FNR{array[$1"_"$2];next} !($1 in array) || FNR==1' $CHROM'.filt.lnkd' - | gzip > $CHROM'.filt.prune.beagle.gz'
  zcat $CHROM'.filt.mafs.gz' | mawk -F '[:\t]' 'NR==FNR{array[$1,$2];next} !(($1,$2) in array) || FNR==1' $CHROM'.filt.lnkd' - | gzip > $CHROM'.filt.prune.mafs.gz'
  ```
+**Note** If chromosomes/scaffolds that did not produce a `.lnkd` file (due to no linkage) should also be included, the above code needs to be modified.
