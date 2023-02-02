@@ -19,7 +19,7 @@ A `--min_maf 0` was chosen to speed up computation since sites had been MAF filt
 ## LD Decay
 Before plotting LD decay, LD output files were randomply downsampled to ~100 million pairwise comparisons in order to speed up calculations. Anything above 100,000 pairwise comparisons gives a decent distribution. To downsample the following `mawk` script was used:
 ```
-zcat $CHROM'.filt.ld.gz' | mawk '{if rand() <= 0.01) print $0}' | gzip > chr.filt.sample1p.ld.gz
+zcat $CHROM'.filt.ld.gz' | mawk '{if(rand() <= 0.01) {print $0}}' | gzip > chr.filt.sample1p.ld.gz
 ```
 Next LD decay was plotted using the `fit_LDdecay.R` script supplied with `ngsLD`:
 ```
