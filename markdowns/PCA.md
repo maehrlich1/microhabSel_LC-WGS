@@ -1,19 +1,13 @@
 # Principal Component Analysis
 
-Prior to running a PCA, the filtered and pruned SNPset was further reduced by only including SNPs with a MAF > 0.1. SNP filtering according to missingness would have been possible also but the distribution of "Individual Depth" was too narrow to allow for further filtering i.e. a large number of SNPs would have been discarded.
-
-To filter the SNP set the following code was used:
+Prior to running a PCA, we concatenate the `beagle.gz` files for all chromosomes into a single file:
 ```
-#Filter the .mafs.gz file for SNPs with MAF >= 0.1
-zcat *.filt.prune.mafs.gz | mawk 'FNR==1 || $6 >= 0.1 {print $1 $2}' > chr.filt.prune.maf10p.pos
-
-#Use the new positions file to filter the .beagle.gz file
-zcat chr.filt.prune.beagle.gz | mawk 'NR==FNR && NR>1 {array[$1"_"$2];next} $1 in array || FNR==1 && NR!=FNR' chr.filt.prune.maf10p.pos - | gzip > chr.filt.prune.maf10p.beagle.gz
+zcat NC_0463*prune.beagle.gz | mawk 'NR>1 && $1=="marker" {next} {print $0}' | gzip > chr.filt.prune.beagle.gz
 ```
-A PCA was performed using the filtered, pruned chromosomal SNP set with MAF >0.1.
+A PCA was performed using the entire filtered, pruned chromosomal SNP set.
 `PCANGSD` was used to calculate the covariance matrix among samples using genotype likelihoods as input. A neighbour-joining tree is also produced from the covariance matrix:
 ```
-pcangsd --beagle chr.filt.prune.maf10p.beagle.gz --out chr.filt.prune.maf10p \
+pcangsd --beagle chr.filt.prune.beagle.gz --out chr.filt.prune \
 --tree --tree_samples samples.list \
 --threads 40
 ```
