@@ -1,10 +1,12 @@
 # *Fst* Calculation
-*Fst* calculation using `ANGSD` requires the site allele frequencies which can then be used to produce site frequency spectra which in turn can be used to calculate *Fst*.
+*Fst* calculation using `ANGSD` requires the site allele frequencies which can then be used to produce site frequency spectra which in turn can be used to calculate *Fst*. For large datasets the 2D-SFS should be estimated for each chromosome as to not run into memory issues.
+
 The procedure as a whole is:
 * Use `ANGSD` for calculating `.saf` files for each population separately
-* Use the `realSFS` script found in `ANGSD/misc/realSFS` to calculate 2D SFS for each population pair
-* Use the above calculated 2D-SFS as priors jointly with all `.saf` files from step 1 to calculate *Fst* binary files
-* Use `realSFS` to extract the *Fst* values from the *Fst* file
+* Use the `realSFS` script found in `ANGSD/misc/realSFS` to calculate 2D-SFS for each population pair and for each chromosome
+* Average across chromosomes to get the global estimate of the 2D-SFS
+* Use the above calculated 2D-SFS as a prior jointly with all `.saf` files from step 1 to calculate *Fst* binary files
+* Extract the *Fst* values from the *Fst* file
 
 ## SAF Calculation
 Since the SFS requires the relative proportion of monomorphic sites too, SAF calculation requires information from the entire genome and not just SNPs.
