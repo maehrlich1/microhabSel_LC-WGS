@@ -20,7 +20,17 @@ CHROM=$(awk -v jindex=$LSB_JOBINDEX 'NR==jindex {print $0}' ../chr.chr)
 
 zcat $CHROM'.counts.gz' | mawk 'NR>1 {c=0; for(i = 1; i <= NF; ++i)if($i>0){++c} {print c}}' | gzip > $CHROM'.indPerSite.gz'
 ```
-Both the global depth distribution (`XXX.depthGlobal`) and the distribution of the number of individuals with at least 1 read were plotted in `R`. By inspecting the inflection points of the distribution, the maximum depth per site and the minimum number of individuals per site for variant calling were extracted. 
+Lastly, the following `mawk` script was used to combine `.depthSample` files across chromosomes in order to get per sample depth statistics across the entire genome:
+```
+mawk '{for (i=1;i<=NF;i++) total[FNR","i]+=$i;} END{for (j=1;j<=FNR;j++) {for (i=1;i<=NF;i++) printf "%3i ",total[j","i]; print "";}}' *.depthSample > chr.depthSample
+```
+All of:
+
+* Global depth distribution (`chr.depthGlobal`)
+* Distribution of the number of individuals with at least 1 read (`chr.indPerSite.gz`)
+* Median per sample depth (`chr.depthSample`)
+
+were plotted in `R`. By inspecting the inflection points of the distribution, the maximum depth per site and the minimum number of individuals per site for variant calling were extracted. 
 
 ## Raw SNP Calling
 
