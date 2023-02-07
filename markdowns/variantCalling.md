@@ -16,7 +16,7 @@ angsd -bam master_bamlist.txt -ref $REF -out $CHROM -r $CHROM: \  # Input and ou
 ```
 The following `mawk` script was used to combine `.depthGlobal` files across chromosomes in order to get depth statistics across the entire genome. Note, the output is in long format for easier parsing in `R`:
 ```
-mawk '{for(i=1;i<=NF;i++) total[i]+=$i;} END {for(i=1;i<=NF;i++) print total[i]}' *.depthGlobal > chr.depthGlobal
+mawk '{for(i=1;i<=NF;i++) total[i]+=$i;} END {for(i=1;i<=NF;i++) print total[i]}' *.depthGlobal | tail -n +2 > chr.depthGlobal
 ```
 A similar script was used to combine `.depthSample` files across chromosomes to get per sample depth statistics for the entire genome. Here, depth is combined for each sample/line. Note, the output is a matrix and must still be parsed in `R`:
 ```
