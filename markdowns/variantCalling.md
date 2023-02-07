@@ -14,16 +14,21 @@ angsd -bam master_bamlist.txt -ref $REF -out $CHROM -r $CHROM: \  # Input and ou
 -minMapQ 20 -baq 2 -minQ 20 \                                     # Filters on BAM files: minimum mapping quality and base quality and adjusted base quality scores.
 -P 4                                                              # ANGSD only takes a maximum of 8 threads. Due to I/O operations being the bottleneck.
 ```
-A custom `mawk` script was used to parse the output of `-dumpCounts 2` (`$CHROM.counts.gz` files) to obtain the number of individuals with at least one read for each site. These `$CHROM.counts.gz` files contain read counts per individual. Header lines were ignored, and the number of individuals with at least 1 read were counted for every genomic position.
+The following `mawk` script was used to combine `.depthGlobal` files across chromosomes in order to get depth statistics across the entire genome. Note, the output is in long format for easier parsing in `R`:
+```
+mawk '{for(i=1;i<=NF;i++) total[i]+=$i;} END {for(i=1;i<=NF;i++) print total[i]}' *.depthGlobal > chr.depthGlobal
+```
+A similar script was used to combine `.depthSample` files across chromosomes to get per sample depth statistics for the entire genome. Here, depth is combined for each sample/line. Note, the output is a matrix and must still be parsed in `R`:
+```
+mawk '{for(i=1;i<=NF;i++) total[FNR,i]+=$i;} END {for(j=1;j<=FNR;j++) {for(i=1;i<=NF;i++) printf "%3i ",total[j,i]; print "";}}' *.depthGlobal > chr.depthGlobal
+```
+Lastly, a custom `mawk` script was used to parse the output of `-dumpCounts 2` (`$CHROM.counts.gz` files) to obtain the number of individuals with at least one read for each site. These `$CHROM.counts.gz` files contain read counts per individual. Header lines were ignored, and the number of individuals with at least 1 read were counted for every genomic position.
 ```
 CHROM=$(awk -v jindex=$LSB_JOBINDEX 'NR==jindex {print $0}' ../chr.chr)
 
 zcat $CHROM'.counts.gz' | mawk 'NR>1 {c=0; for(i = 1; i <= NF; ++i)if($i>0){++c} {print c}}' | gzip > $CHROM'.indPerSite.gz'
 ```
-Lastly, the following `mawk` script was used to combine `.depthSample` files across chromosomes in order to get per sample depth statistics across the entire genome:
-```
-mawk '{for (i=1;i<=NF;i++) total[FNR","i]+=$i;} END{for (j=1;j<=FNR;j++) {for (i=1;i<=NF;i++) printf "%3i ",total[j","i]; print "";}}' *.depthSample > chr.depthSample
-```
+
 All of:
 
 * Global depth distribution (`chr.depthGlobal`)
