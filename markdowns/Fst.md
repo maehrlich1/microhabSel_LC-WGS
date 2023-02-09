@@ -17,3 +17,23 @@ angsd -bam '../'$POP'.bamlist' -ref $REF -anc $REF -out $POP \
 -minMapQ 20 -baq 2 -minQ 20 \
 -P 8 #ANGSD only takes a maximum of 8 threads. Due to I/O operations being the bottleneck.
 ```
+
+## 2D-SFS and *Fst* calculation
+The following script executes the remaining steps:
+```
+while read CHROM
+do
+	~/software/local/angsd/misc/realSFS -fold 1 -r $CHROM -cores $LSB_DJOB_NUMPROC $POP1'.saf.idx' $POP2'.saf.idx' >> $POP1'.'$POP2'.chr.sfs'
+done < ../chr.chr
+
+#Average over all chromosomes to get the global 2D-SFS
+mawk '{for(i=1; i<=NF; i++) {a[i]+=$i}}; END {for(i=1; i<=NF; i++) printf "%s%s", a[i]/NR, (i==NF?ORS:OFS)}' $POP1'.'$POP2'.chr.sfs' > $POP1'.'$POP2'.sfs'
+
+#Prepare the Fst output file
+~/software/local/angsd/misc/realSFS fst index -fold 1 -cores $LSB_DJOB_NUMPROC $POP1'.saf.idx' $POP2'.saf.idx' -sfs $POP1'.'$POP2'.sfs' -fstout $POP1'.'$POP2
+
+#Get the global Fst estimate
+~/software/local/angsd/misc/realSFS fst stats $POP1'.'$POP2'.fst.idx' > $POP1'.'$POP2'.fst'
+```
+
+**Note:** The `while` command loops over all chromosomes since reading in the entire genome requires too much memory. One 2D-SFS is therefore produced *per chromosome*. These 2D-SFS estimates are output as flattened matrices on a single line. The output of the `while` loop is therefore a file with one line per chromosome. These chromosomal estimates are then averaged using `mawk` to give a global estimate which is used in *Fst* calculation.
