@@ -44,7 +44,7 @@ The following `ANGSD` script was run for calling SNPs across the entire *F. hete
 angsd -bam ../master_bamlist.txt -ref $REF -out $CHROM'.raw' -r $CHROM':' \
 -doCounts 1 -doMajorMinor 1 -doMaf 1 -GL 1 -doGlf 2 -doSnpStat 1 -doHWE 1 \
 -minMapQ 20 -baq 2 -minQ 20 \
--minInd 478 -setMaxDepth 1600 \
+-minInd 469 -setMaxDepth 1600 \
 -SNP_pval 1e-6 -minMaf 0.05 -rmTriallelic 1e-4 \
 -P 4 #ANGSD only takes a maximum of 8 threads. Due to I/O operations being the bottleneck.
 ```
@@ -70,14 +70,14 @@ See below for a more thorough description/explanation of the parameters chosen:
 ### Depth Filters:
 
 * `-setMaxDepth 1600` (Inferred from the global depth distribution by fitting a normal curve to the data and calculating +3 standard deviations.)
-* `-minInd 478` (Inferred from the distribution of individual coverage i.e. the number of individuals with at least 1 read per site. Inflection point of the lower tail used as a cutoff. This was almost exactly 50% of individuals which was used as the cutoff.)
+* `-minInd 469` (Inferred from the distribution of individual coverage i.e. the number of individuals with at least 1 read per site. Inflection point of the lower tail used as a cutoff. This was almost exactly 50% of individuals which was used as the cutoff.)
 
 **NOTE:** `-setMinDepth` was **NOT** used as a depth filter since `-minInd` already sets a lower bound.
 
 ### SNP-level Filters:
 
 * `-SNP_pval 1e-6` (To define polymorphic sites.)
-* `-minMaf 0.05` (Would like at least 5 reads confirming an alternative allele. Given `-minInd 478` this allows for a MAF filter of 1%. However, a 5% cutoff was chosen as a more conservative measure.)
+* `-minMaf 0.05` (Would like at least 5 reads confirming an alternative allele. Given `-minInd 469` this allows for a MAF filter of ~1%. However, a 5% cutoff was chosen as a more conservative measure.)
 * `-rmTriallelic 1e-4` (Remove sites with a significant chance of being triallelic. Threshold commonly used in the literature.)
 
 ## Variant Bias Filtering
