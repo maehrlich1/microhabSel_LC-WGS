@@ -103,4 +103,5 @@ The list of filtered SNPs was then used to filter the raw beagle GL and MAF file
 ```
 zcat $CHROM'.raw.beagle.gz' | mawk 'NR==FNR{array[$1"_"$2];next} $1 in array || FNR==1' $CHROM'.filt.pos' - | gzip > $CHROM'.filt.beagle.gz'
 zcat $CHROM'.raw.mafs.gz' | mawk 'NR==FNR{array[$1,$2];next} ($1,$2) in array || FNR==1' $CHROM'.filt.pos' - | gzip > $CHROM'.filt.mafs.gz'
+#Something for filtering the VCF files too!
 ```
