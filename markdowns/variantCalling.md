@@ -42,7 +42,7 @@ were plotted in `R`. By inspecting the inflection points of the distribution, th
 The following `ANGSD` script was run for calling SNPs across the entire *F. heteroclitus* genome.
 ```
 angsd -bam ../master_bamlist.txt -ref $REF -out $CHROM'.raw' -r $CHROM \
--doCounts 1 -GL 1 -doMajorMinor 1 -doMaf 1 -doPost 1 -doVcf 1 -doGlf 2 -doSnpStat 1 -doHWE 1 \
+-doCounts 1 -GL 1 -doMajorMinor 1 -doMaf 1 -doPost 1 -doGlf 2 -doSnpStat 1 -doHWE 1 \
 -minMapQ 20 -baq 2 -minQ 20 \
 -minInd 469 -setMaxDepth 1600 \
 -SNP_pval 1e-6 -minMaf 0.05 -rmTriallelic 1e-4 \
@@ -58,7 +58,6 @@ See below for a more thorough description/explanation of the parameters chosen:
 * `-doMajorMinor 1` (Infers major and minor alleles from data using GLs)
 * `-doMaf 1` (Calculates MAF from GLs)
 * `-doPost 1` (Calculates genotype PROBABILITIES)
-* `-doVcf 1` (Outputs GLs and GPs in VCF format for downstream use.)
 * `-doGlf 2` (Outputs GLs in `BEAGLE` genotype likelihood format for downstream analysis.)
 * `-doSnpStat 1` (Produces bias statistics per SNP which will be used for subsequent filtering.)
 * `-doHWE 1` (Calculates HWE stats. Required for `-doSnpStat` and can be used for later filtering.)
@@ -103,5 +102,5 @@ The list of filtered SNPs was then used to filter the raw beagle GL and MAF file
 ```
 zcat $CHROM'.raw.beagle.gz' | mawk 'NR==FNR{array[$1"_"$2];next} $1 in array || FNR==1' $CHROM'.filt.pos' - | gzip > $CHROM'.filt.beagle.gz'
 zcat $CHROM'.raw.mafs.gz' | mawk 'NR==FNR{array[$1,$2];next} ($1,$2) in array || FNR==1' $CHROM'.filt.pos' - | gzip > $CHROM'.filt.mafs.gz'
-#Something for filtering the VCF files too!
+#Something for filtering the GP files too!
 ```
