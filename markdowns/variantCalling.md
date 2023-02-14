@@ -42,7 +42,7 @@ were plotted in `R`. By inspecting the inflection points of the distribution, th
 The following `ANGSD` script was run for calling SNPs across the entire *F. heteroclitus* genome.
 ```
 angsd -bam ../master_bamlist.txt -ref $REF -out $CHROM'.raw' -r $CHROM \
--doCounts 1 -GL 1 -doMajorMinor 1 -doMaf 1 -doPost 1 -doGlf 2 -doSnpStat 1 -doHWE 1 \
+-doCounts 1 -GL 1 -doMajorMinor 1 -doMaf 1 -doPost 1 -doVcf 1 -doGlf 2 -doSnpStat 1 -doHWE 1 \
 -minMapQ 20 -baq 2 -minQ 20 \
 -minInd 469 -setMaxDepth 1600 \
 -SNP_pval 1e-6 -minMaf 0.05 -rmTriallelic 1e-4 \
@@ -54,11 +54,12 @@ See below for a more thorough description/explanation of the parameters chosen:
 ### Processing Parameters:
 
 * `-doCounts 1` (Counts reads per site. Required for `-setMaxDepth`.)
-* `-GL 1` (`SAMTools` genotype likelihood model)
+* `-GL 1` (Calculates genotype LIKELIHOODS using `SAMTools` genotype likelihood model)
 * `-doMajorMinor 1` (Infers major and minor alleles from data using GLs)
 * `-doMaf 1` (Calculates MAF from GLs)
-* `-doPost 1` (Outputs genotype PROBABILITIES for downstream use.)
-* `-doGlf 2` (Outputs genotype LIKELIHOODS in `BEAGLE` genotype likelihood format. Best to use for downstream analysis.)
+* `-doPost 1` (Calculates genotype PROBABILITIES)
+* `-doVcf 1` (Outputs GLs and GPs in VCF format for downstream use.)
+* `-doGlf 2` (Outputs GLs in `BEAGLE` genotype likelihood format for downstream analysis.)
 * `-doSnpStat 1` (Produces bias statistics per SNP which will be used for subsequent filtering.)
 * `-doHWE 1` (Calculates HWE stats. Required for `-doSnpStat` and can be used for later filtering.)
 
