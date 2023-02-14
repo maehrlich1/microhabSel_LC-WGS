@@ -41,7 +41,7 @@ were plotted in `R`. By inspecting the inflection points of the distribution, th
 
 The following `ANGSD` script was run for calling SNPs across the entire *F. heteroclitus* genome.
 ```
-angsd -bam ../master_bamlist.txt -ref $REF -out $CHROM'.raw' -r $CHROM':' \
+angsd -bam ../master_bamlist.txt -ref $REF -out $CHROM'.raw' -r $CHROM \
 -doCounts 1 -GL 1 -doMajorMinor 1 -doMaf 1 -doPost 1 -doGlf 2 -doSnpStat 1 -doHWE 1 \
 -minMapQ 20 -baq 2 -minQ 20 \
 -minInd 469 -setMaxDepth 1600 \
