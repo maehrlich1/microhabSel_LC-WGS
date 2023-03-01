@@ -24,3 +24,8 @@ angsd -bam '../'$POP'.bamlist' -ref $REF -anc $REF -r $CHROM -sites $CHROM'.poly
 -minMapQ 20 -baq 2 -minQ 20 \
 -P 4 #ANGSD only takes a maximum of 8 threads. Due to I/O operations being the bottleneck.
 ```
+
+
+```
+while read pop1 pop2 chrom; do cat $pop1.$pop2.NC*.fst | awk -v pop1=$pop1 -v pop2=$pop2 '{sum+=$0} END {print pop1,pop2,sum/24}' > $pop1.$pop2.fst; done < pairwise.comps
+```
