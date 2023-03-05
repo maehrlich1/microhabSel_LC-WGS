@@ -34,3 +34,45 @@ ID basinBin pondBin year pop
 .
 ```
 The header line contains the sample ID, phenotype names (in this case binary data for each time point separated by ponds and basin) and covariate names. The second line encodes the type of data (ID, continuous, discrete). Discrete data are encoded numerically and missing values marked as -999.
+
+
+
+
+Get pop mafs
+
+```
+while read pop; do zcat $pop.global.mafs.gz | mawk 'NR>1 {print $7*(1-$6),$7*$6}' > $pop.global.mm; done < ../../pop.list
+
+paste \
+<(cut -d ' ' -f 1 16SP1.global.mm) \
+<(cut -d ' ' -f 1 16SP2.global.mm) \
+<(cut -d ' ' -f 1 16SP3.global.mm) \
+<(cut -d ' ' -f 1 18SP1.global.mm) \
+<(cut -d ' ' -f 1 18SP3.global.mm) \
+<(cut -d ' ' -f 1 18SP4.global.mm) | gzip > ponds.spring.major.ac.gz &
+
+paste \
+<(cut -d ' ' -f 2 16SP1.global.mm) \
+<(cut -d ' ' -f 2 16SP2.global.mm) \
+<(cut -d ' ' -f 2 16SP3.global.mm) \
+<(cut -d ' ' -f 2 18SP1.global.mm) \
+<(cut -d ' ' -f 2 18SP3.global.mm) \
+<(cut -d ' ' -f 2 18SP4.global.mm) | gzip > ponds.spring.minor.ac.gz &
+
+paste \
+<(cut -d ' ' -f 1 16FP1.global.mm) \
+<(cut -d ' ' -f 1 16FP2.global.mm) \
+<(cut -d ' ' -f 1 16FP3.global.mm) \
+<(cut -d ' ' -f 1 18FP1.global.mm) \
+<(cut -d ' ' -f 1 18FP3.global.mm) \
+<(cut -d ' ' -f 1 18FP4.global.mm) | gzip > ponds.fall.major.ac.gz &
+
+paste \
+<(cut -d ' ' -f 2 16FP1.global.mm) \
+<(cut -d ' ' -f 2 16FP2.global.mm) \
+<(cut -d ' ' -f 2 16FP3.global.mm) \
+<(cut -d ' ' -f 2 18FP1.global.mm) \
+<(cut -d ' ' -f 2 18FP3.global.mm) \
+<(cut -d ' ' -f 2 18FP4.global.mm) | gzip > ponds.fall.minor.ac.gz &
+
+```
