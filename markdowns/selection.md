@@ -43,3 +43,9 @@ Get pop mafs
 ```
 zcat 18SP1.global.mafs.gz | mawk -v OFS="\t" 'NR>1 {printf("%s %s %s %s %.0f\n%s %s %s %s %.0f\n", $1":"$2, "18Pond1", "spring", "major", $7*(1-$6), $1":"$2, "18Pond1", "spring", "minor", $7*$6)}' | gzip > 18SP1.global.ac.gz
 ```
+```
+zcat 16SBa.global.mafs.gz 16FBa.global.mafs.gz 18SBa.global.mafs.gz 18FBa.global.mafs.gz | mawk -v OFS="\t" '!/chromo/ {printf("%.0f\n%.0f\n", $7*(1-$6), $7*$6)}' | gzip > basin.global.mm.ac.gz
+
+zcat 16SP1.global.mafs.gz 16FP1.global.mafs.gz 16SP2.global.mafs.gz 16FP2.global.mafs.gz 16SP3.global.mafs.gz 16FP3.global.mafs.gz 18SP1.global.mafs.gz 18FP1.global.mafs.gz 18SP3.global.mafs.gz 18FP3.global.mafs.gz 18SP4.global.mafs.gz 18FP4.global.mafs.gz | mawk -v OFS="\t" '!/chromo/ {printf("%.0f\n%.0f\n", $7*(1-$6), $7*$6)}' | gzip > pond.global.mm.ac.gz
+```
+
