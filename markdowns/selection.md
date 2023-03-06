@@ -41,38 +41,5 @@ The header line contains the sample ID, phenotype names (in this case binary dat
 Get pop mafs
 
 ```
-while read pop; do zcat $pop.global.mafs.gz | mawk 'NR>1 {print $7*(1-$6),$7*$6}' > $pop.global.mm; done < ../../pop.list
-
-paste \
-<(cut -d ' ' -f 1 16SP1.global.mm) \
-<(cut -d ' ' -f 1 16SP2.global.mm) \
-<(cut -d ' ' -f 1 16SP3.global.mm) \
-<(cut -d ' ' -f 1 18SP1.global.mm) \
-<(cut -d ' ' -f 1 18SP3.global.mm) \
-<(cut -d ' ' -f 1 18SP4.global.mm) | gzip > ponds.spring.major.ac.gz &
-
-paste \
-<(cut -d ' ' -f 2 16SP1.global.mm) \
-<(cut -d ' ' -f 2 16SP2.global.mm) \
-<(cut -d ' ' -f 2 16SP3.global.mm) \
-<(cut -d ' ' -f 2 18SP1.global.mm) \
-<(cut -d ' ' -f 2 18SP3.global.mm) \
-<(cut -d ' ' -f 2 18SP4.global.mm) | gzip > ponds.spring.minor.ac.gz &
-
-paste \
-<(cut -d ' ' -f 1 16FP1.global.mm) \
-<(cut -d ' ' -f 1 16FP2.global.mm) \
-<(cut -d ' ' -f 1 16FP3.global.mm) \
-<(cut -d ' ' -f 1 18FP1.global.mm) \
-<(cut -d ' ' -f 1 18FP3.global.mm) \
-<(cut -d ' ' -f 1 18FP4.global.mm) | gzip > ponds.fall.major.ac.gz &
-
-paste \
-<(cut -d ' ' -f 2 16FP1.global.mm) \
-<(cut -d ' ' -f 2 16FP2.global.mm) \
-<(cut -d ' ' -f 2 16FP3.global.mm) \
-<(cut -d ' ' -f 2 18FP1.global.mm) \
-<(cut -d ' ' -f 2 18FP3.global.mm) \
-<(cut -d ' ' -f 2 18FP4.global.mm) | gzip > ponds.fall.minor.ac.gz &
-
+zcat 18SP1.global.mafs.gz | mawk -v OFS="\t" 'NR>1 {printf("%s %s %s %s %.0f\n%s %s %s %s %.0f\n", $1":"$2, "18Pond1", "spring", "major", $7*(1-$6), $1":"$2, "18Pond1", "spring", "minor", $7*$6)}' | gzip > 18SP1.global.ac.gz
 ```
