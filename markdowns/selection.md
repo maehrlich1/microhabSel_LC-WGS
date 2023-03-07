@@ -1,9 +1,10 @@
 # Selection
 To detect loci under selection in both pond and basin environments, samples form two time points are compared and loci are tested for a significant difference in allele frequency/counts.
+
+## Genetic Association
 Here we use the genetic association tool in the `ANGSD` software suite to test for significant allelic differences between time points. By considering the two time points as binary "phenotypes" we can detect loci that are significantly associated with one or the other time point and must have therefore undergone a significant shift from one to the next.
 Furthermore, we can include relevant covariates such as sampling year and the individual pond ID in the analysis.
 
-## Testing selection through temporal association
 We use the `ANGSD` association tool and test only high-quality, filtered variant sites previously determined.
 We employ a genotype dosage model in a generalized linear framework (`-doAsso 6`) which has the advantage of avoiding calling hard genotypes that would be problematic with low-coverage data. Instead, the expected genotype "dosage" is calculated from the genotype probabilities. A dosage can therefore fall "between" two genotypes.
 Genotype dosage is calculated as follows:
@@ -35,17 +36,43 @@ ID basinBin pondBin year pop
 ```
 The header line contains the sample ID, phenotype names (in this case binary data for each time point separated by ponds and basin) and covariate names. The second line encodes the type of data (ID, continuous, discrete). Discrete data are encoded numerically and missing values marked as -999.
 
+**NOTE: The genetic association test among timepoints yielded inflated p-values and was not used. Instead the CMH approach (detailed below) was pursued.**
 
+## Cochran-Mantel-Haenszel tests
+Stratified contingency tables
 
-
-Get pop mafs
-
+Get allele frequency estimates for each population/time point:
 ```
-zcat 18SP1.global.mafs.gz | mawk -v OFS="\t" 'NR>1 {printf("%s %s %s %s %.0f\n%s %s %s %s %.0f\n", $1":"$2, "18Pond1", "spring", "major", $7*(1-$6), $1":"$2, "18Pond1", "spring", "minor", $7*$6)}' | gzip > 18SP1.global.ac.gz
-```
-```
-zcat 16SBa.global.mafs.gz 16FBa.global.mafs.gz 18SBa.global.mafs.gz 18FBa.global.mafs.gz | mawk -v OFS="\t" '!/chromo/ {printf("%.0f\n%.0f\n", $7*(1-$6), $7*$6)}' | gzip > basin.global.mm.ac.gz
+#Extract population bamlist and chromosome from file using job index.
+POP=$(awk -v jindex=$LSB_JOBINDEX 'NR==jindex {print $1}' ../../pop.chr.list)
+CHROM=$(awk -v jindex=$LSB_JOBINDEX 'NR==jindex {print $2}' ../../pop.chr.list)
 
-zcat 16SP1.global.mafs.gz 16FP1.global.mafs.gz 16SP2.global.mafs.gz 16FP2.global.mafs.gz 16SP3.global.mafs.gz 16FP3.global.mafs.gz 18SP1.global.mafs.gz 18FP1.global.mafs.gz 18SP3.global.mafs.gz 18FP3.global.mafs.gz 18SP4.global.mafs.gz 18FP4.global.mafs.gz | mawk -v OFS="\t" '!/chromo/ {printf("%.0f\n%.0f\n", $7*(1-$6), $7*$6)}' | gzip > pond.global.mm.ac.gz
+#CODE
+angsd -bam '../../'$POP'.bamlist' -ref $REF -r $CHROM -sites '../../variants/'$CHROM'.filt.sites' -out $POP'.'$CHROM \
+-GL 1 -doMajorMinor 3 -doMaf 1 \
+-minMapQ 20 -baq 2 -minQ 20 \
+-P 4 #ANGSD only takes a maximum of 8 threads. Due to I/O operations being the bottleneck.
 ```
+Then calculate most-likely estimate of allele counts and round to the nearest integer and pass allele counts to Rscript for CMH testing.
+```
+#Extract chromosome from file using job index.
+CHROM=$(awk -v jindex=$LSB_JOBINDEX 'NR==jindex {print $1}' chrScaff.chr)
 
+#Set number of strata (replicates) in the CMH tests
+NUMSTRATA=2
+
+#Calculate MLE of allele counts and round to nearest integer.
+zcat '16SBa.'$CHROM'.mafs.gz' '16FBa.'$CHROM'.mafs.gz' '18SBa.'$CHROM'.mafs.gz' '18FBa.'$CHROM'.mafs.gz' | \
+mawk -v OFS="\t" '!/chromo/ {printf("%.0f\n%.0f\n", $7*(1-$6), $7*$6)}' | gzip > 'basin.'$CHROM'.mm.ac.gz'
+
+#Get SNP count from positions file
+SNPCOUNT=$(wc -l '../../variants/'$CHROM'.filt.pos' | cut -d ' ' -f 1)
+
+#Run Rscript to calculate CMH statistics
+#Requires input variables (chrom, snpcount, numstrata, infile, outfile) IN ORDER!
+Rscript /home/mae120/scripts/microhabSel_LC-WGS/clusterCMH.R $CHROM $SNPCOUNT $NUMSTRATA 'basin.'$CHROM'.mm.ac.gz' 'basin.'$CHROM'.cmh.gz'
+
+#Merge position metadata and p-values from the CMH tests
+paste '../../variants/'$CHROM'.filt.pos' <(zcat 'basin.'$CHROM'.cmh.gz') | gzip > 'basin.'$CHROM'.cmh.pos.gz'
+```
+The Rscript is given elsewhere.
