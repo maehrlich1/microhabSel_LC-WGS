@@ -76,3 +76,11 @@ Rscript /home/mae120/scripts/microhabSel_LC-WGS/clusterCMH.R $CHROM $SNPCOUNT $N
 paste '../../variants/'$CHROM'.filt.pos' <(zcat 'basin.'$CHROM'.cmh.gz') | gzip > 'basin.'$CHROM'.cmh.pos.gz'
 ```
 The Rscript is given elsewhere.
+
+## Getting delta MAFs
+```
+paste <(zcat 16SP3.[Ns]*.mafs.gz) <(zcat 16FP3.[Ns]*.mafs.gz) | mawk -v OFS="\t" 'NR==1 {print $1,$2,$3,$4,$5,"springMAF","springN","fallMAF","fallN","delta","year","pop"} !/chromo/ {print $1,$2,$3,$4,$5,$6,$7,$13,$14,$13-$6,"2016","Pond3"}' | gzip > 16P3.delta.gz
+```
+```
+
+```
